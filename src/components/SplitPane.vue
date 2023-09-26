@@ -3,13 +3,14 @@ import { ref } from "vue"
 
 const props = defineProps<{
   direction: "horizontal" | "vertical"
+  initial_fraction: number
 }>()
 
 let splitpane = ref()
 
 let sizes = ref({
-  first: "50%",
-  second: "50%",
+  first: props.initial_fraction * 100 + "%",
+  second: 100 - props.initial_fraction * 100 + "%",
 })
 
 let touch = {

@@ -16,9 +16,9 @@ import SplitPane from "./components/SplitPane.vue"
 <template>
   <div id="app-main">
     <span class="toolbar"> <button @click="setCode">click!</button></span>
-    <SplitPane direction="horizontal">
+    <SplitPane direction="horizontal" initial_fraction="0.5">
       <template v-slot:first>
-        <SplitPane direction="vertical">
+        <SplitPane direction="vertical" initial_fraction="0.8">
           <template v-slot:first>
             <Editor ref="editor" />
           </template>
