@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-const content = ref<String>("")
+const content = ref<string>("")
 
-function setContent(newContent: String) {
+function setContent(newContent: string) {
   content.value = newContent
   console.log("setting")
 }
