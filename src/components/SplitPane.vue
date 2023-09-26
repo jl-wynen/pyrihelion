@@ -80,7 +80,7 @@ function calculatePaneSizes(event: MouseEvent) {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 $splitter-thickness: 1ex;
 
 .splitpane {
