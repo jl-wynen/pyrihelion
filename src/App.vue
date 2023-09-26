@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from "vue"
 // import Editor from './components/Editor.vue'
 // import TextOutput from './components/TextOutput.vue'
 //
@@ -10,22 +10,16 @@ import {ref} from 'vue'
 //   textOutput.value.setContent(editor.value.getCode())
 // }
 
-import SplitPane from "./components/SplitPane.vue";
-
+import SplitPane from "./components/SplitPane.vue"
 </script>
 
 <template>
   <div>
     <SplitPane>
-      <template v-slot:left>
-        Left
-      </template>
-      <template v-slot:right>
-        Right
-      </template>
+      <template v-slot:left> Left </template>
+      <template v-slot:right> Right </template>
     </SplitPane>
   </div>
-
 
   <!--  <div id="app-main">-->
   <!--    <div class="app-column">-->
@@ -43,5 +37,4 @@ import SplitPane from "./components/SplitPane.vue";
   <!--  </div>-->
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

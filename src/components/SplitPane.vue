@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from "vue"
 
-let splitpane = ref();
+let splitpane = ref()
 
 let sizes = ref({
   first: "50%",
@@ -14,17 +14,18 @@ let touch = {
 }
 
 function bindMouseDragEvents() {
-  document.addEventListener('mousemove', onMouseMove, {passive: false})
-  document.addEventListener('mouseup', onMouseUp)
+  document.addEventListener("mousemove", onMouseMove, { passive: false })
+  document.addEventListener("mouseup", onMouseUp)
 }
 
 function unbindMouseDragEvents() {
-  document.removeEventListener('mousemove', onMouseMove)
-  document.removeEventListener('mouseup', onMouseUp)
+  document.removeEventListener("mousemove", onMouseMove)
+  document.removeEventListener("mouseup", onMouseUp)
 }
 
 function onMouseDown(event: MouseEvent) {
-  if (event.button == 0) {  // left button
+  if (event.button == 0) {
+    // left button
     bindMouseDragEvents()
     touch.mouseDown = true
   }
@@ -47,14 +48,14 @@ function onMouseMove(event: MouseEvent) {
 function calculatePaneSizes(event: MouseEvent) {
   const rect = splitpane.value.getBoundingClientRect()
   const fraction = (event.clientX - rect.left) / rect.width
-  sizes.value.first = fraction * 100 + '%'
-  sizes.value.second = 100 - fraction * 100 + '%'
+  sizes.value.first = fraction * 100 + "%"
+  sizes.value.second = 100 - fraction * 100 + "%"
 }
 </script>
 
 <template>
   <div ref="splitpane" class="splitpane">
-    <div ref="pane_left" class="pane pane-left" >
+    <div ref="pane_left" class="pane pane-left">
       <slot name="left"></slot>
     </div>
     <div class="pane-splitter" @mousedown="onMouseDown"></div>
@@ -76,12 +77,12 @@ $splitter-width: 1ex;
 }
 
 .pane-left {
-  width: calc(v-bind('sizes.first') - $splitter-width / 2);
+  width: calc(v-bind("sizes.first") - $splitter-width / 2);
   background: #c54949;
 }
 
 .pane-right {
-  width: calc(v-bind('sizes.second') - $splitter-width / 2);
+  width: calc(v-bind("sizes.second") - $splitter-width / 2);
   background: #3f3fb9;
 }
 

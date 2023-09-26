@@ -1,26 +1,22 @@
 <script setup lang="ts">
-import {onMounted} from "vue"
+import { onMounted } from "vue"
 
-import {python} from '@codemirror/lang-python'
-import {oneDark} from '@codemirror/theme-one-dark'
-import {EditorView, basicSetup} from "codemirror"
-import {EditorState} from "@codemirror/state"
+import { python } from "@codemirror/lang-python"
+import { oneDark } from "@codemirror/theme-one-dark"
+import { EditorView, basicSetup } from "codemirror"
+import { EditorState } from "@codemirror/state"
 
 let view: EditorView | null = null
 
 onMounted(() => {
   let state = EditorState.create({
-    extensions: [
-        basicSetup,
-        python(),
-        oneDark,
-    ]
+    extensions: [basicSetup, python(), oneDark],
   })
 
   view = new EditorView({
     state: state,
     doc: "insert code...",
-    parent: document.getElementById("editor")
+    parent: document.getElementById("editor"),
   })
 })
 
@@ -31,7 +27,7 @@ function getCode() {
 }
 
 defineExpose({
-  getCode
+  getCode,
 })
 </script>
 
