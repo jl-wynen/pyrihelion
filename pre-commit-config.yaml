@@ -2,3 +2,7 @@
   rev: "3.0.3"
   hooks:
     - id: prettier
+- repo: https://github.com/eslint/eslint
+  rev: "8.50.0"
+  hooks:
+    - id: eslint
