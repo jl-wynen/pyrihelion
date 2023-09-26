@@ -101,29 +101,25 @@ $splitter-thickness: 1ex;
 .splitpane-horizontal {
   & > .pane-first {
     width: calc(v-bind("sizes.first") - $splitter-thickness / 2);
-    background: #c54949;
   }
 
   & > .pane-second {
     width: calc(v-bind("sizes.second") - $splitter-thickness / 2);
-    background: #3f3fb9;
   }
 }
 
 .splitpane-vertical {
   & > .pane-first {
     height: calc(v-bind("sizes.first") - $splitter-thickness / 2);
-    background: #c54949;
   }
 
   & > .pane-second {
     height: calc(v-bind("sizes.second") - $splitter-thickness / 2);
-    background: #3f3fb9;
   }
 }
 
 .pane-splitter {
-  background: #4ea24e;
+  background: var(--color-background);
 
   &-horizontal {
     width: $splitter-thickness;

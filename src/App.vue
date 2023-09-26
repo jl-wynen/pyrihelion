@@ -15,19 +15,15 @@ import SplitPane from "./components/SplitPane.vue"
 
 <template>
   <div id="app-main">
+    <span class="toolbar"> <button @click="setCode">click!</button></span>
     <SplitPane direction="horizontal">
       <template v-slot:first>
         <SplitPane direction="vertical">
           <template v-slot:first>
-            <button @click="setCode">click!</button>
-            <div class="editor">
-              <Editor ref="editor" />
-            </div>
+            <Editor ref="editor" />
           </template>
           <template v-slot:second>
-            <div class="text-output">
-              <TextOutput ref="textOutput" />
-            </div>
+            <TextOutput ref="textOutput" />
           </template>
         </SplitPane>
       </template>

@@ -34,3 +34,20 @@ defineExpose({
 <template>
   <div id="editor"></div>
 </template>
+
+<style lang="scss">
+#editor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.cm-editor {
+  height: 100%;
+}
+
+.cm-scroller {
+  overflow: auto;
+}
+</style>
