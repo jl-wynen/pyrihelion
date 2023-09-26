@@ -23,9 +23,11 @@ function unbindMouseDragEvents() {
   document.removeEventListener('mouseup', onMouseUp)
 }
 
-function onMouseDown() {
-  bindMouseDragEvents()
-  touch.mouseDown = true
+function onMouseDown(event: MouseEvent) {
+  if (event.button == 0) {  // left button
+    bindMouseDragEvents()
+    touch.mouseDown = true
+  }
 }
 
 function onMouseUp() {
