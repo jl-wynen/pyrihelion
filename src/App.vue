@@ -3,6 +3,7 @@ import { ref } from "vue"
 import Canvas from "./components/Canvas.vue"
 import Editor from "./components/Editor.vue"
 import TextOutput from "./components/TextOutput.vue"
+import ToolBar from "./components/ToolBar.vue"
 
 const canvas = ref<Canvas | null>(null)
 const editor = ref<Editor | null>(null)
@@ -17,7 +18,7 @@ import SplitPane from "./components/SplitPane.vue"
 
 <template>
   <div id="app-main">
-    <span class="toolbar"> <button @click="setCode">click!</button></span>
+    <ToolBar/>
     <!-- prettier-ignore-attribute -->
     <SplitPane direction="horizontal" initial_fraction="0.5">
       <template v-slot:first>
