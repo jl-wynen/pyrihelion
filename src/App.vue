@@ -17,11 +17,16 @@ function setCode() {
 
 onMounted(() => {
     toolBar.value.buttons.run.value.enable()
+    editor.value.setCode(`def foo(x: int, y: int) -> int:
+    return x + y
+
+
+print(foo(1, 2))
+`)
 })
 </script>
 
 <template>
-    <!--    <div id="app-main">-->
     <ToolBar ref="toolBar" @runCode="setCode" />
     <!-- prettier-ignore-attribute -->
     <SplitPane direction="horizontal" initial_fraction=0.5>
@@ -40,7 +45,6 @@ onMounted(() => {
             <Canvas ref="canvas" />
         </template>
     </SplitPane>
-    <!--    </div>-->
 </template>
 
 <style scoped></style>

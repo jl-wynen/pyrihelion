@@ -4,7 +4,7 @@ import { onMounted } from "vue"
 import { python } from "@codemirror/lang-python"
 import { oneDark } from "@codemirror/theme-one-dark"
 import { EditorView, basicSetup } from "codemirror"
-import { EditorState } from "@codemirror/state"
+import { EditorState, EditorSelection, SelectionRange } from "@codemirror/state"
 
 let view: EditorView | null = null
 
@@ -15,19 +15,26 @@ onMounted(() => {
 
     view = new EditorView({
         state: state,
-        doc: "insert code...",
         parent: document.getElementById("editor"),
     })
 })
 
 function getCode() {
     let c = view.state.doc.toString()
-    console.log(c)
     return c
+}
+
+function setCode(code: string) {
+    view.dispatch(
+        view.state.update({
+            changes: { from: 0, to: view.state.doc.length, insert: code },
+        }),
+    )
 }
 
 defineExpose({
     getCode,
+    setCode,
 })
 </script>
 
