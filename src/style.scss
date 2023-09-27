@@ -2,7 +2,7 @@
     --color-background: #262729;
 }
 
-html {background: red;}
+html {background: var(--color-background);}
 
 body {
     height: 100vh;

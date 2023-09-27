@@ -1,29 +1,33 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import Canvas from "./components/Canvas.vue"
 import Editor from "./components/Editor.vue"
+import SplitPane from "./components/SplitPane.vue"
 import TextOutput from "./components/TextOutput.vue"
 import ToolBar from "./components/ToolBar.vue"
 
-const canvas = ref<Canvas | null>(null)
-const editor = ref<Editor | null>(null)
-const textOutput = ref<TextOutput | null>(null)
+const canvas = ref<InstanceType<typeof Canvas> | null>(null)
+const editor = ref<InstanceType<typeof Editor> | null>(null)
+const textOutput = ref<InstanceType<typeof TextOutput> | null>(null)
+const toolBar = ref<InstanceType<typeof ToolBar> | null>(null)
 
 function setCode() {
     textOutput.value.setContent(editor.value.getCode())
 }
 
-import SplitPane from "./components/SplitPane.vue"
+onMounted(() => {
+    toolBar.value.buttons.run.value.enable()
+})
 </script>
 
 <template>
     <!--    <div id="app-main">-->
-    <ToolBar />
+    <ToolBar ref="toolBar" @runCode="setCode" />
     <!-- prettier-ignore-attribute -->
-    <SplitPane direction="horizontal" initial_fraction="0.5">
+    <SplitPane direction="horizontal" initial_fraction=0.5>
         <template v-slot:first>
             <!-- prettier-ignore-attribute -->
-            <SplitPane direction="vertical" initial_fraction="0.8">
+            <SplitPane direction="vertical" initial_fraction=0.8>
                 <template v-slot:first>
                     <Editor ref="editor" />
                 </template>
