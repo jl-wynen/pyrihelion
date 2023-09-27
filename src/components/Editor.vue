@@ -9,49 +9,49 @@ import { EditorState } from "@codemirror/state"
 let view: EditorView | null = null
 
 onMounted(() => {
-  let state = EditorState.create({
-    extensions: [basicSetup, python(), oneDark],
-  })
+    let state = EditorState.create({
+        extensions: [basicSetup, python(), oneDark],
+    })
 
-  view = new EditorView({
-    state: state,
-    doc: "insert code...",
-    parent: document.getElementById("editor"),
-  })
+    view = new EditorView({
+        state: state,
+        doc: "insert code...",
+        parent: document.getElementById("editor"),
+    })
 })
 
 function getCode() {
-  let c = view.state.doc.toString()
-  console.log(c)
-  return c
+    let c = view.state.doc.toString()
+    console.log(c)
+    return c
 }
 
 defineExpose({
-  getCode,
+    getCode,
 })
 </script>
 
 <template>
-  <div id="editor"></div>
+    <div id="editor"></div>
 </template>
 
 <style lang="scss">
 #editor {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
 }
 
 .cm-editor {
-  height: 100%;
+    height: 100%;
 }
 
 .cm-scroller {
-  overflow: auto;
+    overflow: auto;
 }
 
 .ͼ1.cm-focused {
-  outline: none;
+    outline: none;
 }
 </style>
