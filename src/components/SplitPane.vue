@@ -52,10 +52,11 @@ function onMouseMove(event: MouseEvent) {
 
 function calculatePaneSizes(event: MouseEvent) {
     const rect = splitpane.value.getBoundingClientRect()
-    const fraction =
+    let fraction =
         props.direction == "horizontal"
             ? (event.x - rect.left) / rect.width
             : (event.y - rect.top) / rect.height
+    fraction = Math.max(Math.min(fraction, 0.95), 0.05)
     sizes.value.first = fraction * 100 + "%"
     sizes.value.second = 100 - fraction * 100 + "%"
 }
