@@ -28,12 +28,9 @@ function unbindMouseDragEvents() {
     document.removeEventListener("mouseup", onMouseUp)
 }
 
-function onMouseDown(event: MouseEvent) {
-    if (event.button == 0) {
-        // left button
-        bindMouseDragEvents()
-        touch.mouseDown = true
-    }
+function onMouseDown() {
+    bindMouseDragEvents()
+    touch.mouseDown = true
 }
 
 function onMouseUp() {
@@ -74,7 +71,7 @@ function calculatePaneSizes(event: MouseEvent) {
         <div
             class="pane-splitter"
             :class="'pane-splitter-' + props.direction"
-            @mousedown="onMouseDown"
+            @mousedown.left="onMouseDown"
         ></div>
         <div ref="pane_right" class="pane pane-second">
             <slot name="second"></slot>
