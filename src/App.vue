@@ -17,26 +17,26 @@ import SplitPane from "./components/SplitPane.vue"
 </script>
 
 <template>
-    <div id="app-main">
-        <ToolBar />
-        <!-- prettier-ignore-attribute -->
-        <SplitPane direction="horizontal" initial_fraction="0.5">
-            <template v-slot:first>
-                <!-- prettier-ignore-attribute -->
-                <SplitPane direction="vertical" initial_fraction="0.8">
-                    <template v-slot:first>
-                        <Editor ref="editor" />
-                    </template>
-                    <template v-slot:second>
-                        <TextOutput ref="textOutput" />
-                    </template>
-                </SplitPane>
-            </template>
-            <template v-slot:second>
-                <Canvas ref="canvas" />
-            </template>
-        </SplitPane>
-    </div>
+    <!--    <div id="app-main">-->
+    <ToolBar />
+    <!-- prettier-ignore-attribute -->
+    <SplitPane direction="horizontal" initial_fraction="0.5">
+        <template v-slot:first>
+            <!-- prettier-ignore-attribute -->
+            <SplitPane direction="vertical" initial_fraction="0.8">
+                <template v-slot:first>
+                    <Editor ref="editor" />
+                </template>
+                <template v-slot:second>
+                    <TextOutput ref="textOutput" />
+                </template>
+            </SplitPane>
+        </template>
+        <template v-slot:second>
+            <Canvas ref="canvas" />
+        </template>
+    </SplitPane>
+    <!--    </div>-->
 </template>
 
 <style scoped></style>
