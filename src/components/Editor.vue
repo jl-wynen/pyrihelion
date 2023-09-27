@@ -50,4 +50,8 @@ defineExpose({
 .cm-scroller {
   overflow: auto;
 }
+
+.ͼ1.cm-focused {
+  outline: none;
+}
 </style>

@@ -31,5 +31,9 @@ $padding: 1ex;
   border: none;
   background: #282c34;
   color: #c4c4c4;
+
+  &:focus-visible {
+    outline: none;
+  }
 }
 </style>
