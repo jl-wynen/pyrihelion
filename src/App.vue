@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue"
+import Canvas from "./components/Canvas.vue"
 import Editor from "./components/Editor.vue"
 import TextOutput from "./components/TextOutput.vue"
 
+const canvas = ref<Canvas | null>(null)
 const editor = ref<Editor | null>(null)
 const textOutput = ref<TextOutput | null>(null)
 
@@ -17,10 +19,10 @@ import SplitPane from "./components/SplitPane.vue"
   <div id="app-main">
     <span class="toolbar"> <button @click="setCode">click!</button></span>
     <!-- prettier-ignore-attribute -->
-    <SplitPane direction="horizontal" initial_fraction=0.5>
+    <SplitPane direction="horizontal" initial_fraction="0.5">
       <template v-slot:first>
         <!-- prettier-ignore-attribute -->
-        <SplitPane direction="vertical" initial_fraction=0.8>
+        <SplitPane direction="vertical" initial_fraction="0.8">
           <template v-slot:first>
             <Editor ref="editor" />
           </template>
@@ -29,7 +31,9 @@ import SplitPane from "./components/SplitPane.vue"
           </template>
         </SplitPane>
       </template>
-      <template v-slot:second> Canvas </template>
+      <template v-slot:second>
+        <Canvas ref="canvas" />
+      </template>
     </SplitPane>
   </div>
 </template>
