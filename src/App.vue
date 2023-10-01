@@ -27,8 +27,9 @@ function runPython() {
         (result) => {
             console.log("Python says " + result)
         },
+        // TODO app hangs on errors
         (reason) => {
-            console.warn("Python failed: " + reason)
+            textOutput.value?.appendPythonStderr(reason)
         },
     )
 }
