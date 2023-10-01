@@ -16,7 +16,7 @@
         "@fortawesome/vue-fontawesome": "^3.0.3",
         "codemirror": "^6.0.1",
         "node-fetch": "^3.3.2",
-        "pyodide": "^0.24.1",
+        "pyodide": "^0.23.4",
         "vue": "^3.3.4"
     },
     "devDependencies": {
