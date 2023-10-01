@@ -7,7 +7,17 @@ function setContent(newContent: string) {
     content.value = newContent
 }
 
+function appendPythonStdout(text: string) {
+    content.value += text + "\n"
+}
+
+function appendPythonStderr(text: string) {
+    content.value += "Err:" + text + "\n"
+}
+
 defineExpose({
+    appendPythonStderr,
+    appendPythonStdout,
     setContent,
 })
 </script>

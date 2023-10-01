@@ -33,15 +33,27 @@ function runPython() {
     )
 }
 
-async function loadPyodide() {
-    return await loadPyodideOrig({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full",
+function configurePyodide(py: PyodideInterface) {
+    py.setStdout({
+        batched: textOutput.value?.appendPythonStdout,
+    })
+    py.setStderr({
+        batched: textOutput.value?.appendPythonStderr,
     })
 }
 
+async function loadPyodide(): Promise<PyodideInterface> {
+    const promise = loadPyodideOrig({
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full",
+    })
+    promise.then(configurePyodide)
+    return promise
+}
+
 onMounted(() => {
+    // TODO this blocks the app completely until pyodide is loaded
     loadPyodide().then(
-        (pyodide) => {
+        (pyodide: PyodideInterface) => {
             py = pyodide
             toolBar.value!.buttons.run.value?.enable()
             console.log("Successfully loaded Pyodide")
