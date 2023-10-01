@@ -29,3 +29,14 @@ jobs:
           cache: "npm"
           cache-dependency-path: "package-lock.json"
       - run: npm run build
+  publish:
+    name: Publish to GH pages
+    needs: ["build", "formatting"]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: JamesIves/github-pages-deploy-action@v4.4.3
+        with:
+          branch: gh-pages
+          folder: dist
+          single-commit: true
+          ssh-key: ${{ secrets.GH_PAGES_DEPLOY_KEY }}
