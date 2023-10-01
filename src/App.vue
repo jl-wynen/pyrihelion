@@ -5,18 +5,52 @@ import Editor from "./components/Editor.vue"
 import SplitPane from "./components/SplitPane.vue"
 import TextOutput from "./components/TextOutput.vue"
 import ToolBar from "./components/ToolBar.vue"
+import { loadPyodide as loadPyodideOrig, PyodideInterface } from "pyodide"
 
 const canvas = ref<InstanceType<typeof Canvas> | null>(null)
 const editor = ref<InstanceType<typeof Editor> | null>(null)
 const textOutput = ref<InstanceType<typeof TextOutput> | null>(null)
 const toolBar = ref<InstanceType<typeof ToolBar> | null>(null)
 
-function setCode() {
-    textOutput.value?.setContent(editor.value?.getCode() ?? "")
+let py: PyodideInterface | null = null
+
+function runPython() {
+    if (py === null) {
+        console.error("Cannot run Python, Pyodide is not loaded.")
+        return
+    }
+    if (editor.value === null) {
+        console.error("Cannot run Python, cannot access the editor.")
+        return
+    }
+    py.runPythonAsync(editor.value.getCode()).then(
+        (result) => {
+            console.log("Python says " + result)
+        },
+        (reason) => {
+            console.warn("Python failed: " + reason)
+        },
+    )
+}
+
+async function loadPyodide() {
+    return await loadPyodideOrig({
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full",
+    })
 }
 
 onMounted(() => {
-    toolBar.value?.buttons.run.value?.enable()
+    loadPyodide().then(
+        (pyodide) => {
+            py = pyodide
+            toolBar.value!.buttons.run.value?.enable()
+            console.log("Successfully loaded Pyodide")
+        },
+        (reason) => {
+            console.error("Failed to load Pyodide: " + reason)
+        },
+    )
+
     editor.value?.setCode(`def foo(x: int, y: int) -> int:
     return x + y
 
@@ -27,7 +61,7 @@ print(foo(1, 2))
 </script>
 
 <template>
-    <ToolBar ref="toolBar" @runCode="setCode" />
+    <ToolBar ref="toolBar" @runCode="runPython" />
     <SplitPane direction="horizontal" :initial_fraction="0.5">
         <template v-slot:first>
             <SplitPane direction="vertical" :initial_fraction="0.8">
