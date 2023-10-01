@@ -7,6 +7,9 @@ on:
       - release
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   formatting:
     name: Formatting and static analysis
@@ -35,18 +38,6 @@ jobs:
           name: site
           path: dist
   publish:
-    name: Publish to GH pages
+    name: Deploy
     needs: ["build", "formatting"]
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: site
-          path: dist
-      - uses: JamesIves/github-pages-deploy-action@v4.4.3
-        with:
-          branch: gh-pages
-          folder: dist
-          single-commit: true
-          ssh-key: ${{ secrets.GH_PAGES_DEPLOY_KEY }}
+    uses: ./.github/workflows/deploy.yml
