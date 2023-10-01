@@ -33,7 +33,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: site
-          path: dist/
+          path: dist
   publish:
     name: Publish to GH pages
     needs: ["build", "formatting"]
@@ -42,6 +42,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: site
+          path: dist
       - uses: JamesIves/github-pages-deploy-action@v4.4.3
         with:
           branch: gh-pages
