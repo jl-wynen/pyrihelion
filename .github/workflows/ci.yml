@@ -28,6 +28,7 @@ jobs:
         with:
           cache: "npm"
           cache-dependency-path: "package-lock.json"
+      - run: npm install
       - run: npm run build
   publish:
     name: Publish to GH pages
