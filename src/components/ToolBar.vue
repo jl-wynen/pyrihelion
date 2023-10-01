@@ -38,7 +38,7 @@ defineEmits([
     <span class="toolbar">
         <ButtonDownload ref="buttonDownload" @runCode="$emit('downloadCode')" />
         <ButtonUpload ref="buttonUpload" @runCode="$emit('uploadCode')" />
-        <ButtonReset ref="buttonReset" @runCode="$emit('uploadReset')" />
+        <ButtonReset ref="buttonReset" @runCode="$emit('resetCode')" />
         <ButtonRun
             ref="buttonRun"
             @runCode="$emit('runCode')"
