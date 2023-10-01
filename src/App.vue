@@ -28,11 +28,9 @@ print(foo(1, 2))
 
 <template>
     <ToolBar ref="toolBar" @runCode="setCode" />
-    <!-- prettier-ignore-attribute -->
-    <SplitPane direction="horizontal" initial_fraction=0.5>
+    <SplitPane direction="horizontal" :initial_fraction="0.5">
         <template v-slot:first>
-            <!-- prettier-ignore-attribute -->
-            <SplitPane direction="vertical" initial_fraction=0.8>
+            <SplitPane direction="vertical" :initial_fraction="0.8">
                 <template v-slot:first>
                     <Editor ref="editor" />
                 </template>

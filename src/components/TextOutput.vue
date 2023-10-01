@@ -13,8 +13,7 @@ defineExpose({
 </script>
 
 <template>
-    <!-- prettier-ignore-attribute -->
-    <textarea class="text-output" rows="15" readonly=true>{{
+    <textarea class="text-output" rows="15" :readonly="true">{{
         content
     }}</textarea>
 </template>
