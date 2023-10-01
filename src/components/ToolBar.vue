@@ -27,8 +27,11 @@ defineEmits(["runCode", "stopRunning"])
 
 <style scoped lang="scss">
 .toolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     box-sizing: border-box;
-    padding: 2pt 1em 2pt 1em;
+    padding: 3pt 1em 3pt 1em;
 }
 
 .toolbar button {

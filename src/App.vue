@@ -56,6 +56,7 @@ onMounted(() => {
     loadPyodide().then(
         (pyodide: PyodideInterface) => {
             py = pyodide
+            toolBar.value!.buttons.run.value?.activate()
             toolBar.value!.buttons.run.value?.enable()
             console.log("Successfully loaded Pyodide")
         },
