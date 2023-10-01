@@ -4,11 +4,11 @@ import { onMounted, ref } from "vue"
 const button = ref<HTMLButtonElement | null>(null)
 
 function enable() {
-    button.value.disabled = false
+    if (button.value !== null) button.value.disabled = false
 }
 
 onMounted(() => {
-    button.value.disabled = true
+    button.value!.disabled = true
 })
 
 defineExpose({

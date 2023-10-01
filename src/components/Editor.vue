@@ -4,7 +4,7 @@ import { onMounted } from "vue"
 import { python } from "@codemirror/lang-python"
 import { oneDark } from "@codemirror/theme-one-dark"
 import { EditorView, basicSetup } from "codemirror"
-import { EditorState, EditorSelection, SelectionRange } from "@codemirror/state"
+import { EditorState } from "@codemirror/state"
 
 let view: EditorView | null = null
 
@@ -15,16 +15,16 @@ onMounted(() => {
 
     view = new EditorView({
         state: state,
-        parent: document.getElementById("editor"),
+        parent: document.getElementById("editor")!,
     })
 })
 
-function getCode() {
-    let c = view.state.doc.toString()
-    return c
+function getCode(): string {
+    return view?.state.doc.toString() ?? ""
 }
 
 function setCode(code: string) {
+    if (view === null) return
     view.dispatch(
         view.state.update({
             changes: { from: 0, to: view.state.doc.length, insert: code },

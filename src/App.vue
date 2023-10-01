@@ -12,12 +12,12 @@ const textOutput = ref<InstanceType<typeof TextOutput> | null>(null)
 const toolBar = ref<InstanceType<typeof ToolBar> | null>(null)
 
 function setCode() {
-    textOutput.value.setContent(editor.value.getCode())
+    textOutput.value?.setContent(editor.value?.getCode() ?? "")
 }
 
 onMounted(() => {
-    toolBar.value.buttons.run.value.enable()
-    editor.value.setCode(`def foo(x: int, y: int) -> int:
+    toolBar.value?.buttons.run.value?.enable()
+    editor.value?.setCode(`def foo(x: int, y: int) -> int:
     return x + y
 
 
