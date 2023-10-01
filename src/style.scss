@@ -4,6 +4,7 @@
 
     --color-on-background0: #323232;
     --color-on-background1: #4d4d4d;
+    --color-on-background2: #707070;
 
     --color-text0: #dddddd;
     --color-text1: #ababab;
@@ -15,8 +16,12 @@
     --color-text-on-color1: #aaa;
 
     --color-info: #1c568a;
-    --color-success: #64a148;
-    --color-error: #ad3d4a;
+
+    --color-success0: #64a148;
+    --color-success1: #5e8f47;
+
+    --color-error0: #ad3d4a;
+    --color-error1: #993d48;
 }
 
 html {background: var(--color-background1);}
@@ -43,8 +48,28 @@ body {
 $toolbar-height: 2em;
 
 .toolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
     max-height: $toolbar-height;
     height: $toolbar-height;
+    box-sizing: border-box;
+    padding: 3pt 1em 3pt 1em;
+
+    button {
+        border: none;
+        border-radius: 0;
+        width: 2.7em;
+        height: 100%;
+        background-color: inherit;
+        color: var(--color-text-on-color0);
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--color-on-background1);
+        }
+    }
 }
 
 #app > .splitpane {

@@ -25,15 +25,24 @@ defineEmits(["stopRunning"])
 </template>
 
 <style lang="scss">
-.stop-button:disabled {
-    background-color: var(--color-on-background1);
-    color: var(--color-text2);
-}
+.stop-button {
+    width: 4.5em !important;
 
-.stop-button:enabled {
-    background-color: var(--color-error0);
-    color: var(--color-text-on-color0);
-    cursor: pointer;
+    &:disabled {
+        background-color: var(--color-on-background1);
+        color: var(--color-text2);
+        cursor: default;
+    }
+
+    &:enabled {
+        background-color: var(--color-error0);
+        color: var(--color-text-on-color0);
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--color-error1);
+        }
+    }
 }
 
 .stop-icon {

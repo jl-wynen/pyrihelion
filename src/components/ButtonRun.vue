@@ -35,7 +35,7 @@ defineEmits(["runCode"])
             <div v-if="loading" class="run-spinner"></div>
             <font-awesome-icon
                 v-else-if="running"
-                icon="fa-solid fa-rotate-right"
+                icon="fa-solid fa-rotate"
                 class="run-icon"
             />
             <font-awesome-icon
@@ -49,21 +49,30 @@ defineEmits(["runCode"])
 </template>
 
 <style lang="scss">
-.run-button:enabled {
-    background-color: var(--color-success);
-    color: var(--color-text-on-color0);
-    cursor: pointer;
-}
+.run-button {
+    width: 4.5em !important;
 
-.run-button:disabled {
-    background-color: var(--color-on-background1);
-    color: var(--color-text2);
-}
+    &:enabled {
+        background-color: var(--color-success0);
+        color: var(--color-text-on-color0);
+        cursor: pointer;
 
-.run-button > div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+        &:hover {
+            background-color: var(--color-success1);
+        }
+    }
+
+    &:disabled {
+        background-color: var(--color-on-background1);
+        color: var(--color-text2);
+        cursor: default;
+    }
+
+    & > div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
 }
 
 .run-icon {
