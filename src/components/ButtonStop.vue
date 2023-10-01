@@ -19,9 +19,27 @@ defineEmits(["stopRunning"])
 </script>
 
 <template>
-    <button ref="button" @click="$emit('stopRunning')">
-        <font-awesome-icon icon="fa-solid fa-stop" />STOP
+    <button ref="button" class="stop-button" @click="$emit('stopRunning')">
+        <font-awesome-icon icon="fa-solid fa-stop" class="stop-icon" />STOP
     </button>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+.stop-button:disabled {
+    background-color: var(--color-on-background1);
+    color: var(--color-text2);
+}
+
+.stop-button:enabled {
+    background-color: var(--color-error0);
+    color: var(--color-text-on-color0);
+    cursor: pointer;
+}
+
+.stop-icon {
+    width: 1.5ex;
+    height: 2ex;
+    margin-left: 0.4ex;
+    margin-right: 0.6ex;
+}
+</style>

@@ -3,15 +3,18 @@ import { onMounted, ref } from "vue"
 
 const button = ref<HTMLButtonElement | null>(null)
 
-let active = ref(false)
+let loading = ref(true)
+let running = ref(false)
 
 function activate() {
     if (button.value === null) return
-    active.value = true
+    loading.value = false
+    button.value.disabled = false
 }
 
-function enable() {
-    if (button.value !== null) button.value.disabled = false
+function setRunning(r: boolean) {
+    if (running.value === null) return
+    running.value = r
 }
 
 onMounted(() => {
@@ -20,7 +23,7 @@ onMounted(() => {
 
 defineExpose({
     activate,
-    enable,
+    setRunning,
 })
 
 defineEmits(["runCode"])
@@ -29,12 +32,17 @@ defineEmits(["runCode"])
 <template>
     <button ref="button" class="run-button" @click="$emit('runCode')">
         <div>
+            <div v-if="loading" class="run-spinner"></div>
             <font-awesome-icon
-                v-if="active"
+                v-else-if="running"
+                icon="fa-solid fa-rotate-right"
+                class="run-icon"
+            />
+            <font-awesome-icon
+                v-else
                 icon="fa-solid fa-play"
                 class="run-icon"
             />
-            <div v-else class="run-spinner"></div>
             <div>RUN</div>
         </div>
     </button>
@@ -43,7 +51,13 @@ defineEmits(["runCode"])
 <style lang="scss">
 .run-button:enabled {
     background-color: var(--color-success);
-    color: var(--color-text0);
+    color: var(--color-text-on-color0);
+    cursor: pointer;
+}
+
+.run-button:disabled {
+    background-color: var(--color-on-background1);
+    color: var(--color-text2);
 }
 
 .run-button > div {
@@ -53,7 +67,6 @@ defineEmits(["runCode"])
 }
 
 .run-icon {
-    display: inline-block;
     width: 1.5ex;
     height: 2ex;
     margin-left: 0.6ex;
@@ -73,7 +86,7 @@ defineEmits(["runCode"])
         width: 1.5ex;
         height: 1.5ex;
 
-        // Centre the :after element in the parent.
+        // Center the :after element in the parent.
         position: absolute;
         top: 0;
         left: 0;
@@ -83,7 +96,8 @@ defineEmits(["runCode"])
 
         border-radius: 50%;
         border: 3px solid;
-        border-color: #337eab transparent #337eab transparent;
+        border-color: var(--color-text-info) transparent var(--color-text-info)
+            transparent;
         animation: run-spinner 1.2s linear infinite;
     }
 }

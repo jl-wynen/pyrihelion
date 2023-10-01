@@ -118,7 +118,7 @@ $splitter-thickness: 1ex;
 }
 
 .pane-splitter {
-    background: var(--color-background);
+    background: var(--color-background1);
 
     &-horizontal {
         width: $splitter-thickness;

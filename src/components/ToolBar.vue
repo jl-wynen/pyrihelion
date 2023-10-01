@@ -37,6 +37,7 @@ defineEmits(["runCode", "stopRunning"])
 .toolbar button {
     border: none;
     border-radius: 0;
+    width: 4.5em;
     height: 100%;
 }
 </style>

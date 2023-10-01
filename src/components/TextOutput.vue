@@ -37,7 +37,7 @@ defineExpose({
     margin: 0;
     padding: 1ex;
     border: none;
-    background: #282c34;
+    background: var(--color-on-background0);
     color: #c4c4c4;
 
     &:focus-visible {

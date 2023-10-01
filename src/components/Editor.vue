@@ -52,6 +52,11 @@ defineExpose({
 
 .cm-editor {
     height: 100%;
+    background-color: var(--color-on-background0);
+}
+
+.cm-gutter {
+    background-color: var(--color-on-background0);
 }
 
 .cm-scroller {
