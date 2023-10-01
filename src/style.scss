@@ -69,6 +69,10 @@ $toolbar-height: 2em;
         &:hover {
             background-color: var(--color-on-background1);
         }
+
+        &:enabled:active {
+            background-color: var(--color-on-background0);
+        }
     }
 }
 

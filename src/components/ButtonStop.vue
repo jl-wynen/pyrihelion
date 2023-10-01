@@ -42,6 +42,10 @@ defineEmits(["stopRunning"])
         &:hover {
             background-color: var(--color-error1);
         }
+
+        &:active {
+            background-color: var(--color-error1);
+        }
     }
 }
 

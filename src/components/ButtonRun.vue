@@ -60,6 +60,10 @@ defineEmits(["runCode"])
         &:hover {
             background-color: var(--color-success1);
         }
+
+        &:active {
+            background-color: var(--color-success1) !important;
+        }
     }
 
     &:disabled {
