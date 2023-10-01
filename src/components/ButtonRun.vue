@@ -17,6 +17,11 @@ function setRunning(r: boolean) {
     running.value = r
 }
 
+function click() {
+    if (running.value) emit("rerunCode")
+    else emit("runCode")
+}
+
 onMounted(() => {
     button.value!.disabled = true
 })
@@ -26,11 +31,11 @@ defineExpose({
     setRunning,
 })
 
-defineEmits(["runCode"])
+const emit = defineEmits(["rerunCode", "runCode"])
 </script>
 
 <template>
-    <button ref="button" class="run-button" @click="$emit('runCode')">
+    <button ref="button" class="run-button" @click="click">
         <div>
             <div v-if="loading" class="run-spinner"></div>
             <font-awesome-icon

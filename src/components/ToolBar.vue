@@ -27,6 +27,7 @@ defineExpose({
 defineEmits([
     "downloadCode",
     "resetCode",
+    "rerunCode",
     "runCode",
     "stopRunning",
     "uploadCode",
@@ -38,7 +39,11 @@ defineEmits([
         <ButtonDownload ref="buttonDownload" @runCode="$emit('downloadCode')" />
         <ButtonUpload ref="buttonUpload" @runCode="$emit('uploadCode')" />
         <ButtonReset ref="buttonReset" @runCode="$emit('uploadReset')" />
-        <ButtonRun ref="buttonRun" @runCode="$emit('runCode')" />
+        <ButtonRun
+            ref="buttonRun"
+            @runCode="$emit('runCode')"
+            @rerunCode="$emit('rerunCode')"
+        />
         <ButtonStop ref="buttonStop" @stopRunning="$emit('stopRunning')" />
     </span>
 </template>

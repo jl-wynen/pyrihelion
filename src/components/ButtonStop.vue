@@ -7,11 +7,16 @@ function enable() {
     if (button.value !== null) button.value.disabled = false
 }
 
+function disable() {
+    if (button.value !== null) button.value.disabled = true
+}
+
 onMounted(() => {
     button.value!.disabled = true
 })
 
 defineExpose({
+    disable,
     enable,
 })
 

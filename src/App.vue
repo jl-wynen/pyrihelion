@@ -23,9 +23,12 @@ function runPython() {
         console.error("Cannot run Python, cannot access the editor.")
         return
     }
+    toolBar.value?.buttons.stop.value?.enable()
+    toolBar.value?.buttons.run.value?.setRunning(true)
     py.runPythonAsync(editor.value.getCode()).then(
         (result) => {
             console.log("Python says " + result)
+            finishRunning()
         },
         // TODO app hangs on errors
         (reason) => {
@@ -33,6 +36,13 @@ function runPython() {
         },
     )
 }
+
+function finishRunning() {
+    toolBar.value?.buttons.stop.value?.disable()
+    toolBar.value?.buttons.run.value?.setRunning(false)
+}
+
+function rerunPython() {}
 
 function configurePyodide(py: PyodideInterface) {
     py.setStdout({
@@ -74,7 +84,7 @@ print(foo(1, 2))
 </script>
 
 <template>
-    <ToolBar ref="toolBar" @runCode="runPython" />
+    <ToolBar ref="toolBar" @rerunCode="rerunPython" @runCode="runPython" />
     <SplitPane direction="horizontal" :initial_fraction="0.5">
         <template v-slot:first>
             <SplitPane direction="vertical" :initial_fraction="0.8">
