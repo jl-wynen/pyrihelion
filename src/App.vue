@@ -5,18 +5,17 @@ import Editor from "./components/Editor.vue"
 import SplitPane from "./components/SplitPane.vue"
 import TextOutput from "./components/TextOutput.vue"
 import ToolBar from "./components/ToolBar.vue"
-import type { PyodideInterface } from "pyodide"
-import { loadPython } from "./python"
+import { Python, PythonStatus } from "./python"
 
 const canvas = ref<InstanceType<typeof Canvas> | null>(null)
 const editor = ref<InstanceType<typeof Editor> | null>(null)
 const textOutput = ref<InstanceType<typeof TextOutput> | null>(null)
 const toolBar = ref<InstanceType<typeof ToolBar> | null>(null)
 
-let py: PyodideInterface | null = null
+let python: Python | undefined
 
 function runPython() {
-    if (py === null) {
+    if (python === undefined) {
         console.error("Cannot run Python, Pyodide is not loaded.")
         return
     }
@@ -26,39 +25,34 @@ function runPython() {
     }
     toolBar.value?.buttons.stop.value?.enable()
     toolBar.value?.buttons.run.value?.setRunning(true)
-    py.runPythonAsync(editor.value.getCode()).then(
-        (result) => {
-            console.log("Python says " + result)
-            finishRunning()
-        },
-        // TODO app hangs on errors
-        (reason) => {
-            textOutput.value?.appendPythonStderr(reason)
-        },
-    )
+    python.run(editor.value!.getCode())
 }
 
-function finishRunning() {
+function onPythonFinished({ success, error }: PythonStatus) {
+    if (!success) {
+        console.warn("Python failed: " + error)
+    }
     toolBar.value?.buttons.stop.value?.disable()
     toolBar.value?.buttons.run.value?.setRunning(false)
 }
 
-function rerunPython() {}
+function onPythonLoaded({ success, error }: PythonStatus) {
+    if (success) {
+        toolBar.value!.buttons.run.value?.activate()
+        console.log("Successfully loaded Pyodide")
+    } else {
+        console.error("Failed to load Pyodide: " + error)
+    }
+}
 
 onMounted(() => {
-    // TODO this blocks the app completely until pyodide is loaded
-    loadPython({
-        stdout: textOutput.value!.appendPythonStdout,
-        stderr: textOutput.value!.appendPythonStderr,
-    }).then(
-        (pyodide: PyodideInterface) => {
-            py = pyodide
-            toolBar.value!.buttons.run.value?.activate()
-            console.log("Successfully loaded Pyodide")
+    python = new Python(
+        {
+            stdout: textOutput.value!.appendPythonStdout,
+            stderr: textOutput.value!.appendPythonStderr,
         },
-        (reason) => {
-            console.error("Failed to load Pyodide: " + reason)
-        },
+        onPythonLoaded,
+        onPythonFinished,
     )
 
     editor.value?.setCode(`def foo(x: int, y: int) -> int:
@@ -71,7 +65,7 @@ print(foo(1, 2))
 </script>
 
 <template>
-    <ToolBar ref="toolBar" @rerunCode="rerunPython" @runCode="runPython" />
+    <ToolBar ref="toolBar" @runCode="runPython" />
     <SplitPane direction="horizontal" :initial_fraction="0.5">
         <template v-slot:first>
             <SplitPane direction="vertical" :initial_fraction="0.8">

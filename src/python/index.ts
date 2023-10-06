@@ -1,3 +1,4 @@
-import { loadPython } from "./python"
+import { Python, PythonStatus } from "./python"
 
-export { loadPython }
+export { Python }
+export type { PythonStatus }
