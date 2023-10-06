@@ -5,7 +5,8 @@ import Editor from "./components/Editor.vue"
 import SplitPane from "./components/SplitPane.vue"
 import TextOutput from "./components/TextOutput.vue"
 import ToolBar from "./components/ToolBar.vue"
-import { loadPyodide as loadPyodideOrig, PyodideInterface } from "pyodide"
+import type { PyodideInterface } from "pyodide"
+import { loadPython } from "./python"
 
 const canvas = ref<InstanceType<typeof Canvas> | null>(null)
 const editor = ref<InstanceType<typeof Editor> | null>(null)
@@ -44,26 +45,12 @@ function finishRunning() {
 
 function rerunPython() {}
 
-function configurePyodide(py: PyodideInterface) {
-    py.setStdout({
-        batched: textOutput.value?.appendPythonStdout,
-    })
-    py.setStderr({
-        batched: textOutput.value?.appendPythonStderr,
-    })
-}
-
-async function loadPyodide(): Promise<PyodideInterface> {
-    const promise = loadPyodideOrig({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full",
-    })
-    promise.then(configurePyodide)
-    return promise
-}
-
 onMounted(() => {
     // TODO this blocks the app completely until pyodide is loaded
-    loadPyodide().then(
+    loadPython({
+        stdout: textOutput.value!.appendPythonStdout,
+        stderr: textOutput.value!.appendPythonStderr,
+    }).then(
         (pyodide: PyodideInterface) => {
             py = pyodide
             toolBar.value!.buttons.run.value?.activate()
