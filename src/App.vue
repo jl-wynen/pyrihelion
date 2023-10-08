@@ -28,6 +28,13 @@ function runPython() {
     python.run(editor.value!.getCode())
 }
 
+function stopPython() {
+    toolBar.value?.buttons.stop.value?.disable()
+    toolBar.value?.buttons.run.value?.setRunning(false)
+    toolBar.value?.buttons.run.value?.deactivate()
+    python?.terminate()
+}
+
 function onPythonFinished({ success, error }: PythonStatus) {
     if (!success) {
         console.warn("Python failed: " + error)
@@ -56,16 +63,16 @@ onMounted(() => {
     )
 
     editor.value?.setCode(`def foo(x: int, y: int) -> int:
-    return x + y
+        return x + y
 
 
-print(foo(1, 2))
-`)
+    print(foo(1, 2))
+    `)
 })
 </script>
 
 <template>
-    <ToolBar ref="toolBar" @runCode="runPython" />
+    <ToolBar ref="toolBar" @runCode="runPython" @stopRunning="stopPython" />
     <SplitPane direction="horizontal" :initial_fraction="0.5">
         <template v-slot:first>
             <SplitPane direction="vertical" :initial_fraction="0.8">

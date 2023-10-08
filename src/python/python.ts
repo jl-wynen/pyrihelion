@@ -10,7 +10,8 @@ export type PythonStatus = {
 
 export class Python {
     private worker: Worker
-    private outputHandler: PythonOutputHandler
+    private readonly outputHandler: PythonOutputHandler
+    private readonly makeInterpreter: () => Worker
 
     constructor(
         outputHandler: PythonOutputHandler,
@@ -18,11 +19,16 @@ export class Python {
         onFinished: (s: PythonStatus) => void,
     ) {
         this.outputHandler = outputHandler
-        this.worker = new Worker(
-            new URL("./pythonWorker.ts", import.meta.url),
-            { type: "module" },
-        )
-        this.worker.onmessage = this.workerMessageHandler(onLoaded, onFinished)
+
+        this.makeInterpreter = () => {
+            const worker = new Worker(
+                new URL("./pythonWorker.ts", import.meta.url),
+                { type: "module" },
+            )
+            worker.onmessage = this.workerMessageHandler(onLoaded, onFinished)
+            return worker
+        }
+        this.worker = this.makeInterpreter()
     }
 
     private workerMessageHandler(
@@ -51,9 +57,16 @@ export class Python {
     }
 
     run(code: string) {
-        console.debug("Running python code:\n", code)
+        console.debug("Running Python code:\n", code)
         this.worker.postMessage({
             code: code,
         })
+    }
+
+    terminate() {
+        console.debug("Terminating Python interpreter")
+        this.worker.terminate()
+        console.debug("Reinitializing Python interpreter")
+        this.worker = this.makeInterpreter()
     }
 }

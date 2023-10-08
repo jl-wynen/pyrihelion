@@ -12,6 +12,12 @@ function activate() {
     button.value.disabled = false
 }
 
+function deactivate() {
+    if (button.value === null) return
+    loading.value = true
+    button.value.disabled = true
+}
+
 function setRunning(r: boolean) {
     if (running.value === null) return
     running.value = r
@@ -23,6 +29,7 @@ onMounted(() => {
 
 defineExpose({
     activate,
+    deactivate,
     setRunning,
 })
 
