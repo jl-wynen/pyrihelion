@@ -1,3 +1,5 @@
+import type { WorkerMessage } from "./pythonWorker"
+
 export type PythonOutputHandler = {
     stdout: (msg: string) => void
     stderr: (msg: string) => void
@@ -5,6 +7,7 @@ export type PythonOutputHandler = {
 
 export type PythonStatus = {
     success: boolean
+    result?: string
     error?: string
 }
 
@@ -35,23 +38,30 @@ export class Python {
         onLoaded: (s: PythonStatus) => void,
         onFinished: (s: PythonStatus) => void,
     ) {
-        return (event: MessageEvent) => {
+        return (event: MessageEvent<WorkerMessage>) => {
             console.debug("Worker sent message: ", event.data)
             const data = event.data
-            if (data.stdout !== undefined) {
-                this.outputHandler.stdout(data.stdout)
-            } else if (data.stderr !== undefined) {
-                this.outputHandler.stderr(data.stderr)
-            } else if (data.runFinished !== undefined) {
-                onFinished({
-                    success: data.runFinished.success,
-                    error: data.runFinished.error,
-                })
-            } else if (data.loadFinished !== undefined) {
-                onLoaded({
-                    success: data.loadFinished.success,
-                    error: data.loadFinished.error,
-                })
+            switch (data.event) {
+                case "output":
+                    if (data.which === "stdout") {
+                        this.outputHandler.stdout(data.output)
+                    } else {
+                        this.outputHandler.stderr(data.output)
+                    }
+                    break
+                case "finished":
+                    if (data.success) {
+                        onFinished({ success: true, result: data.result })
+                    } else {
+                        onFinished({ success: false, error: data.error })
+                    }
+                    break
+                case "loadFinished":
+                    if (data.success) {
+                        onLoaded({ success: true })
+                    } else {
+                        onLoaded({ success: false, error: data.error })
+                    }
             }
         }
     }
@@ -59,6 +69,7 @@ export class Python {
     run(code: string) {
         console.debug("Running Python code:\n", code)
         this.worker.postMessage({
+            cmd: "run",
             code: code,
         })
     }

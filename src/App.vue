@@ -66,8 +66,8 @@ onMounted(() => {
         return x + y
 
 
-    print(foo(1, 2))
-    `)
+print(foo(1, 2))
+`)
 })
 </script>
 
