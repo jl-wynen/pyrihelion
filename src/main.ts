@@ -13,12 +13,11 @@ import {
     faUpload,
 } from "@fortawesome/free-solid-svg-icons"
 
+import { pythonState } from "./injectionKeys"
+import { PythonState } from "./python"
+
 library.add(faDownload, faPlay, faRotate, faRotateLeft, faStop, faUpload)
 
 const app = createApp(App)
-
-import { pythonRunning } from "./injectionKeys"
-;(() => {
-    app.provide(pythonRunning, ref(false))
-})()
+app.provide(pythonState, ref(PythonState.Loading))
 app.component("font-awesome-icon", FontAwesomeIcon).mount("#app")

@@ -1,5 +1,6 @@
 import type { InjectionKey, Ref } from "vue"
+import { PythonState } from "./python"
 
-export const pythonRunning = Symbol("pythonRunning") as InjectionKey<
-    Ref<boolean>
+export const pythonState = Symbol("pythonState") as InjectionKey<
+    Ref<PythonState>
 >

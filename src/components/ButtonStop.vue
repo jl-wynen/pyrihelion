@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { inject, Ref, ref } from "vue"
-import { pythonRunning } from "../injectionKeys"
+import { pythonState } from "../injectionKeys"
+import { PythonState } from "../python"
 
 const button = ref<HTMLButtonElement | null>(null)
-const running = inject(pythonRunning) as Ref<boolean>
+const state = inject(pythonState) as Ref<PythonState>
 
 defineEmits(["stopRunning"])
 </script>
@@ -12,7 +13,7 @@ defineEmits(["stopRunning"])
     <button
         ref="button"
         class="stop-button"
-        :disabled="!running"
+        :disabled="state !== PythonState.Running"
         @click="$emit('stopRunning')"
     >
         <font-awesome-icon icon="fa-solid fa-stop" class="stop-icon" />STOP

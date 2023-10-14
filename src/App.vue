@@ -6,9 +6,9 @@ import Editor from "./components/Editor.vue"
 import SplitPane from "./components/SplitPane.vue"
 import TextOutput from "./components/TextOutput.vue"
 import ToolBar from "./components/ToolBar.vue"
-import { Python, PythonStatus } from "./python"
+import { Python, PythonState, PythonStatus } from "./python"
 
-import { pythonRunning } from "./injectionKeys"
+import { pythonState } from "./injectionKeys"
 
 const canvas = ref<InstanceType<typeof Canvas> | null>(null)
 const editor = ref<InstanceType<typeof Editor> | null>(null)
@@ -30,7 +30,6 @@ function runPython() {
 }
 
 function stopPython() {
-    toolBar.value?.buttons.run.value?.deactivate()
     python?.terminate()
 }
 
@@ -42,7 +41,6 @@ function onPythonFinished({ success, error }: PythonStatus) {
 
 function onPythonLoaded({ success, error }: PythonStatus) {
     if (success) {
-        toolBar.value!.buttons.run.value?.activate()
         console.log("Successfully loaded Pyodide")
     } else {
         console.error("Failed to load Pyodide: " + error)
@@ -57,9 +55,7 @@ onMounted(() => {
         },
         onPythonLoaded,
         onPythonFinished,
-        {
-            running: inject(pythonRunning) as Ref<boolean>,
-        },
+        inject(pythonState) as Ref<PythonState>,
     )
 
     editor.value?.setCode(`def foo(x: int, y: int) -> int:

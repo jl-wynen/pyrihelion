@@ -1,43 +1,30 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from "vue"
 import type { Ref } from "vue"
-import { pythonRunning } from "../injectionKeys.ts"
+import { inject, onMounted, ref } from "vue"
+import { pythonState } from "../injectionKeys.ts"
+import { PythonState } from "../python"
 
 const button = ref<HTMLButtonElement | null>(null)
-
-let loading = ref(true)
-const running = inject(pythonRunning) as Ref<boolean>
-
-function activate() {
-    if (button.value === null) return
-    loading.value = false
-    button.value.disabled = false
-}
-
-function deactivate() {
-    if (button.value === null) return
-    loading.value = true
-    button.value.disabled = true
-}
+const state = inject(pythonState) as Ref<PythonState>
 
 onMounted(() => {
     button.value!.disabled = true
-})
-
-defineExpose({
-    activate,
-    deactivate,
 })
 
 defineEmits(["runCode"])
 </script>
 
 <template>
-    <button ref="button" class="run-button" @click="$emit('runCode')">
+    <button
+        ref="button"
+        class="run-button"
+        :disabled="state === PythonState.Loading"
+        @click="$emit('runCode')"
+    >
         <div>
-            <div v-if="loading" class="run-spinner"></div>
+            <div v-if="state === PythonState.Loading" class="run-spinner"></div>
             <font-awesome-icon
-                v-else-if="running"
+                v-else-if="state === PythonState.Running"
                 icon="fa-solid fa-rotate"
                 class="run-icon"
             />

@@ -1,13 +1,20 @@
 import type { Ref } from "vue"
-import type { WorkerMessage, RunFinishedMessage } from "./pythonWorker"
+import type {
+    LoadFinishedMessage,
+    OutputMessage,
+    RunFinishedMessage,
+    WorkerMessage,
+} from "./pythonWorker"
 
 export type PythonOutputHandler = {
     stdout: (msg: string) => void
     stderr: (msg: string) => void
 }
 
-export type PythonState = {
-    running: Ref<boolean>
+export enum PythonState {
+    Ready,
+    Running,
+    Loading,
 }
 
 export type PythonStatus = {
@@ -20,18 +27,19 @@ export class Python {
     private worker: Worker
     private readonly outputHandler: PythonOutputHandler
     private readonly makeInterpreter: () => Worker
-    private readonly state: PythonState
+    private readonly state: Ref<PythonState>
 
     constructor(
         outputHandler: PythonOutputHandler,
         onLoaded: (s: PythonStatus) => void,
         onFinished: (s: PythonStatus) => void,
-        state: PythonState,
+        state: Ref<PythonState>,
     ) {
         this.outputHandler = outputHandler
         this.state = state
 
         this.makeInterpreter = () => {
+            this.state.value = PythonState.Loading
             const worker = new Worker(
                 new URL("./pythonWorker.ts", import.meta.url),
                 { type: "module" },
@@ -51,22 +59,23 @@ export class Python {
             const data = event.data
             switch (data.event) {
                 case "output":
-                    if (data.which === "stdout") {
-                        this.outputHandler.stdout(data.output)
-                    } else {
-                        this.outputHandler.stderr(data.output)
-                    }
+                    this.onOutput(data)
                     break
                 case "finished":
                     this.onFinished(data, onFinished)
                     break
                 case "loadFinished":
-                    if (data.success) {
-                        onLoaded({ success: true })
-                    } else {
-                        onLoaded({ success: false, error: data.error })
-                    }
+                    this.onLoadFinished(data, onLoaded)
+                    break
             }
+        }
+    }
+
+    private onOutput(msg: OutputMessage) {
+        if (msg.which === "stdout") {
+            this.outputHandler.stdout(msg.output)
+        } else {
+            this.outputHandler.stderr(msg.output)
         }
     }
 
@@ -74,9 +83,20 @@ export class Python {
         msg: RunFinishedMessage,
         callback: (s: PythonStatus) => void,
     ) {
-        this.state.running.value = false
+        this.state.value = PythonState.Ready
         const status = msg.success
             ? { success: true, result: msg.result }
+            : { success: false, error: msg.error }
+        callback(status)
+    }
+
+    private onLoadFinished(
+        msg: LoadFinishedMessage,
+        callback: (s: PythonStatus) => void,
+    ) {
+        this.state.value = PythonState.Ready
+        const status = msg.success
+            ? { success: true }
             : { success: false, error: msg.error }
         callback(status)
     }
@@ -87,13 +107,12 @@ export class Python {
             cmd: "run",
             code: code,
         })
-        this.state.running.value = true
+        this.state.value = PythonState.Running
     }
 
     terminate() {
         console.debug("Terminating Python interpreter")
         this.worker.terminate()
-        this.state.running.value = false
         console.debug("Reinitializing Python interpreter")
         this.worker = this.makeInterpreter()
     }
