@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { inject, onMounted, ref } from "vue"
+import type { Ref } from "vue"
 import Canvas from "./components/Canvas.vue"
 import Editor from "./components/Editor.vue"
 import SplitPane from "./components/SplitPane.vue"
@@ -7,12 +8,15 @@ import TextOutput from "./components/TextOutput.vue"
 import ToolBar from "./components/ToolBar.vue"
 import { Python, PythonStatus } from "./python"
 
+import { pythonRunning } from "./injectionKeys"
+
 const canvas = ref<InstanceType<typeof Canvas> | null>(null)
 const editor = ref<InstanceType<typeof Editor> | null>(null)
 const textOutput = ref<InstanceType<typeof TextOutput> | null>(null)
 const toolBar = ref<InstanceType<typeof ToolBar> | null>(null)
 
 let python: Python | undefined
+const running = inject(pythonRunning) as Ref<boolean>
 
 function runPython() {
     if (python === undefined) {
@@ -23,13 +27,13 @@ function runPython() {
         console.error("Cannot run Python, cannot access the editor.")
         return
     }
-    toolBar.value?.buttons.stop.value?.enable()
+    running.value = true
     toolBar.value?.buttons.run.value?.setRunning(true)
     python.run(editor.value!.getCode())
 }
 
 function stopPython() {
-    toolBar.value?.buttons.stop.value?.disable()
+    running.value = false
     toolBar.value?.buttons.run.value?.setRunning(false)
     toolBar.value?.buttons.run.value?.deactivate()
     python?.terminate()
@@ -39,7 +43,7 @@ function onPythonFinished({ success, error }: PythonStatus) {
     if (!success) {
         console.warn("Python failed: " + error)
     }
-    toolBar.value?.buttons.stop.value?.disable()
+    running.value = false
     toolBar.value?.buttons.run.value?.setRunning(false)
 }
 
@@ -66,6 +70,8 @@ onMounted(() => {
         return x + y
 
 
+import time
+time.sleep(1)
 print(foo(1, 2))
 `)
 })

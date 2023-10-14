@@ -1,30 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { inject, Ref, ref } from "vue"
+import { pythonRunning } from "../injectionKeys"
 
 const button = ref<HTMLButtonElement | null>(null)
-
-function enable() {
-    if (button.value !== null) button.value.disabled = false
-}
-
-function disable() {
-    if (button.value !== null) button.value.disabled = true
-}
-
-onMounted(() => {
-    button.value!.disabled = true
-})
-
-defineExpose({
-    disable,
-    enable,
-})
+const running = inject(pythonRunning) as Ref<boolean>
 
 defineEmits(["stopRunning"])
 </script>
 
 <template>
-    <button ref="button" class="stop-button" @click="$emit('stopRunning')">
+    <button
+        ref="button"
+        class="stop-button"
+        :disabled="!running"
+        @click="$emit('stopRunning')"
+    >
         <font-awesome-icon icon="fa-solid fa-stop" class="stop-icon" />STOP
     </button>
 </template>

@@ -1,4 +1,4 @@
-import { createApp } from "vue"
+import { createApp, ref } from "vue"
 import "./style.scss"
 import App from "./App.vue"
 
@@ -15,4 +15,10 @@ import {
 
 library.add(faDownload, faPlay, faRotate, faRotateLeft, faStop, faUpload)
 
-createApp(App).component("font-awesome-icon", FontAwesomeIcon).mount("#app")
+const app = createApp(App)
+
+import { pythonRunning } from "./injectionKeys"
+;(() => {
+    app.provide(pythonRunning, ref(false))
+})()
+app.component("font-awesome-icon", FontAwesomeIcon).mount("#app")
