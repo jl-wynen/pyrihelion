@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { inject, onMounted, ref } from "vue"
+import type { Ref } from "vue"
+import { pythonRunning } from "../injectionKeys.ts"
 
 const button = ref<HTMLButtonElement | null>(null)
 
 let loading = ref(true)
-let running = ref(false)
+const running = inject(pythonRunning) as Ref<boolean>
 
 function activate() {
     if (button.value === null) return
@@ -18,11 +20,6 @@ function deactivate() {
     button.value.disabled = true
 }
 
-function setRunning(r: boolean) {
-    if (running.value === null) return
-    running.value = r
-}
-
 onMounted(() => {
     button.value!.disabled = true
 })
@@ -30,7 +27,6 @@ onMounted(() => {
 defineExpose({
     activate,
     deactivate,
-    setRunning,
 })
 
 defineEmits(["runCode"])

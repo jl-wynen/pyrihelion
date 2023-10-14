@@ -1,8 +1,13 @@
-import type { WorkerMessage } from "./pythonWorker"
+import type { Ref } from "vue"
+import type { WorkerMessage, RunFinishedMessage } from "./pythonWorker"
 
 export type PythonOutputHandler = {
     stdout: (msg: string) => void
     stderr: (msg: string) => void
+}
+
+export type PythonState = {
+    running: Ref<boolean>
 }
 
 export type PythonStatus = {
@@ -15,13 +20,16 @@ export class Python {
     private worker: Worker
     private readonly outputHandler: PythonOutputHandler
     private readonly makeInterpreter: () => Worker
+    private readonly state: PythonState
 
     constructor(
         outputHandler: PythonOutputHandler,
         onLoaded: (s: PythonStatus) => void,
         onFinished: (s: PythonStatus) => void,
+        state: PythonState,
     ) {
         this.outputHandler = outputHandler
+        this.state = state
 
         this.makeInterpreter = () => {
             const worker = new Worker(
@@ -50,11 +58,7 @@ export class Python {
                     }
                     break
                 case "finished":
-                    if (data.success) {
-                        onFinished({ success: true, result: data.result })
-                    } else {
-                        onFinished({ success: false, error: data.error })
-                    }
+                    this.onFinished(data, onFinished)
                     break
                 case "loadFinished":
                     if (data.success) {
@@ -66,17 +70,30 @@ export class Python {
         }
     }
 
+    private onFinished(
+        msg: RunFinishedMessage,
+        callback: (s: PythonStatus) => void,
+    ) {
+        this.state.running.value = false
+        const status = msg.success
+            ? { success: true, result: msg.result }
+            : { success: false, error: msg.error }
+        callback(status)
+    }
+
     run(code: string) {
         console.debug("Running Python code:\n", code)
         this.worker.postMessage({
             cmd: "run",
             code: code,
         })
+        this.state.running.value = true
     }
 
     terminate() {
         console.debug("Terminating Python interpreter")
         this.worker.terminate()
+        this.state.running.value = false
         console.debug("Reinitializing Python interpreter")
         this.worker = this.makeInterpreter()
     }

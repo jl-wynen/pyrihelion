@@ -16,7 +16,6 @@ const textOutput = ref<InstanceType<typeof TextOutput> | null>(null)
 const toolBar = ref<InstanceType<typeof ToolBar> | null>(null)
 
 let python: Python | undefined
-const running = inject(pythonRunning) as Ref<boolean>
 
 function runPython() {
     if (python === undefined) {
@@ -27,14 +26,10 @@ function runPython() {
         console.error("Cannot run Python, cannot access the editor.")
         return
     }
-    running.value = true
-    toolBar.value?.buttons.run.value?.setRunning(true)
     python.run(editor.value!.getCode())
 }
 
 function stopPython() {
-    running.value = false
-    toolBar.value?.buttons.run.value?.setRunning(false)
     toolBar.value?.buttons.run.value?.deactivate()
     python?.terminate()
 }
@@ -43,8 +38,6 @@ function onPythonFinished({ success, error }: PythonStatus) {
     if (!success) {
         console.warn("Python failed: " + error)
     }
-    running.value = false
-    toolBar.value?.buttons.run.value?.setRunning(false)
 }
 
 function onPythonLoaded({ success, error }: PythonStatus) {
@@ -64,6 +57,9 @@ onMounted(() => {
         },
         onPythonLoaded,
         onPythonFinished,
+        {
+            running: inject(pythonRunning) as Ref<boolean>,
+        },
     )
 
     editor.value?.setCode(`def foo(x: int, y: int) -> int:
