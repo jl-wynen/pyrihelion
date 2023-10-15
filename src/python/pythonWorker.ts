@@ -5,7 +5,11 @@ export type RunCommand = {
     code: string
 }
 
-export type WorkerCommand = RunCommand
+export type LoadCommand = {
+    cmd: "load"
+}
+
+export type WorkerCommand = RunCommand | LoadCommand
 
 export type RunFinishedMessage = {
     event: "finished"
@@ -46,8 +50,8 @@ async function loadPyodide() {
     )
 }
 
-const pyodideReadyPromise = loadPyodide()
-let pyodide: PyodideInterface | null = null
+let pyodideReadyPromise: Promise<void> | undefined = undefined
+let pyodide: PyodideInterface | undefined = undefined
 
 function configurePyodide(pyodide: PyodideInterface) {
     pyodide.setStdout({
@@ -67,8 +71,11 @@ function handleStderr(msg: string) {
 }
 
 async function handleRunCommand(command: RunCommand) {
+    if (pyodideReadyPromise === undefined) {
+        return
+    }
     await pyodideReadyPromise
-    if (pyodide === null) {
+    if (pyodide === undefined) {
         return
     }
 
@@ -91,13 +98,15 @@ async function handleRunCommand(command: RunCommand) {
 }
 
 onmessage = async (event: MessageEvent<WorkerCommand>) => {
-    console.log("Worker, got event ", event.data)
+    console.debug("Worker, got event ", event.data)
 
     switch (event.data.cmd) {
         case "run":
             await handleRunCommand(event.data)
             break
-        default:
-            throw new Error("Unknown command: " + event.data.cmd)
+        case "load":
+            pyodideReadyPromise = loadPyodide()
+            await pyodideReadyPromise
+            break
     }
 }
