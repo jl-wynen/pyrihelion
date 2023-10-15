@@ -14,7 +14,6 @@ export type WorkerCommand = RunCommand | LoadCommand
 export type RunFinishedMessage = {
     event: "finished"
     success: boolean
-    result?: string
     error?: string
 }
 
@@ -70,6 +69,39 @@ function handleStderr(msg: string) {
     postMessage({ event: "output", which: "stderr", output: msg })
 }
 
+/** Generate code that wraps the given Python code.
+ *
+ * The code catches all exceptions, strips non-user-facing frames,
+ * and assigns the exception message to `__user_error__`.
+ */
+// The `not_user_frame` filter is applied twice, first to drop frames
+// from pyodide, and second to drop frames from our wrapping code.
+// The output should only contain frames that the user wrote or from
+// functions they called themselves.
+function preprocessCode(rawCode: string): string {
+    return `import itertools
+import traceback
+
+from pyodide.code import eval_code
+
+
+code = '''${rawCode}'''
+
+def not_user_frame(frame):
+    return 'File "<exec>"' not in frame
+
+try:
+    eval_code(code)
+except Exception as exc:
+    it = iter(traceback.format_exception(exc))
+    head = next(it)
+    it = itertools.dropwhile(not_user_frame, it)
+    next(it)
+    frames = itertools.dropwhile(not_user_frame, it)
+    __user_error__ = head + "".join(frames)
+`
+}
+
 async function handleRunCommand(command: RunCommand) {
     if (pyodideReadyPromise === undefined) {
         return
@@ -79,21 +111,25 @@ async function handleRunCommand(command: RunCommand) {
         return
     }
 
-    // TODO do we need a context?
-    // const { code, ...context } = event.data
-    // for (const key of Object.keys(context)) {
-    //     self[key] = context[key]
-    // }
-
+    const namespace = pyodide.globals.get("dict")()
+    let errorMessage: string | undefined = undefined
     try {
-        const result = await pyodide.runPythonAsync(command.code)
-        postMessage({ event: "finished", success: true, result: result })
+        await pyodide.runPythonAsync(preprocessCode(command.code), {
+            globals: namespace,
+        })
+        errorMessage = namespace.get("__user_error__")
     } catch (error) {
+        errorMessage = (error as Error).message
+    }
+
+    if (errorMessage !== undefined) {
         postMessage({
             event: "finished",
             success: false,
-            error: (error as Error).message,
+            error: errorMessage,
         })
+    } else {
+        postMessage({ event: "finished", success: true })
     }
 }
 

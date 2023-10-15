@@ -19,7 +19,6 @@ export enum PythonState {
 
 export type PythonStatus = {
     success: boolean
-    result?: string
     error?: string
 }
 
@@ -82,7 +81,7 @@ export class Python {
     ) {
         this.state.value = PythonState.Ready
         const status = msg.success
-            ? { success: true, result: msg.result }
+            ? { success: true }
             : { success: false, error: msg.error }
         callback(status)
     }

@@ -62,9 +62,10 @@ onMounted(() => {
         return x + y
 
 
-import time
-time.sleep(1)
+#import time
+#time.sleep(1)
 print(foo(1, 2))
+a
 `)
 })
 </script>
