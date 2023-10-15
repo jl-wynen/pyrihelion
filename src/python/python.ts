@@ -25,6 +25,7 @@ export type PythonStatus = {
 
 export class Python {
     private activeInterpreter: Interpreter
+    private backupInterpreter?: Interpreter = undefined
     private readonly outputHandler: PythonOutputHandler
     private readonly state: Ref<PythonState>
     private readonly makeInterpreter: () => Interpreter
@@ -91,22 +92,45 @@ export class Python {
         msg: LoadFinishedMessage,
         callback: (s: PythonStatus) => void,
     ) {
+        console.log(`onLoadFinished ${workerId}, ${this.activeInterpreter.id}`)
         if (workerId !== this.activeInterpreter.id) {
-            console.error(`Worker ${workerId} reported ready but is not active`)
-            return // TODO
+            return // detect ready state when switching to the backup
         }
 
         this.state.value = PythonState.Ready
         const status = msg.success
             ? { success: true }
             : { success: false, error: msg.error }
+        console.log("tell user that ready")
         callback(status)
+        this.makeBackup()
+    }
+
+    private makeBackup() {
+        if (this.backupInterpreter === undefined) {
+            this.backupInterpreter = this.makeInterpreter()
+        }
+    }
+
+    private switchToBackup() {
+        console.debug("Switching to backup interpreter")
+        this.makeBackup()
+        this.activeInterpreter = this.backupInterpreter!
+        this.backupInterpreter = undefined
+
+        if (this.activeInterpreter.ready) {
+            this.activeInterpreter.reportReady()
+        } else {
+            this.state.value = PythonState.Loading
+        }
+        // else: The interpreter will send a message, and the regular
+        // handler takes care of it.
     }
 
     run(code: string) {
         if (!this.activeInterpreter.ready) {
             console.error("Interpreter not ready")
-            return // TODO
+            return
         }
         console.debug("Running Python code:\n", code)
         this.activeInterpreter.run(code)
@@ -116,21 +140,20 @@ export class Python {
     terminate() {
         if (!this.activeInterpreter.ready) {
             console.error("Interpreter not ready")
-            return // TODO
+            return
         }
 
         console.debug("Terminating Python interpreter")
         this.activeInterpreter.terminate()
-        this.state.value = PythonState.Loading
-        console.debug("Reinitializing Python interpreter")
-        this.activeInterpreter = this.makeInterpreter()
+        this.switchToBackup()
     }
 }
 
 class Interpreter {
     private worker: Worker
     private readonly workerId: number
-    private workerReady: boolean = false
+    private reportReadyImpl?: () => void = undefined
+
     private static interpreterCount: number = 0
 
     constructor(
@@ -168,17 +191,23 @@ class Interpreter {
                 userMessageHandler(this.workerId, event)
             }
             this.worker.onmessage = messageHandler
-            this.workerReady = true
+            this.reportReadyImpl = () => {
+                messageHandler(event)
+            }
             messageHandler(event)
         }
     }
 
     get ready() {
-        return this.workerReady
+        return this.reportReadyImpl !== undefined
     }
 
     get id() {
         return this.workerId
+    }
+
+    reportReady() {
+        this.reportReadyImpl?.()
     }
 
     run(code: string) {
@@ -190,6 +219,5 @@ class Interpreter {
 
     terminate() {
         this.worker.terminate()
-        this.workerReady = false
     }
 }
