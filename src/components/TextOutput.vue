@@ -3,10 +3,6 @@ import { ref } from "vue"
 
 const content = ref<string>("")
 
-function setContent(newContent: string) {
-    content.value = newContent
-}
-
 function appendPythonStdout(text: string) {
     content.value += text + "\n"
 }
@@ -15,10 +11,14 @@ function appendPythonStderr(text: string) {
     content.value += "Err:" + text + "\n"
 }
 
+function appendPythonException(exception: string) {
+    content.value += "Exception:" + exception + "\n"
+}
+
 defineExpose({
+    appendPythonException,
     appendPythonStderr,
     appendPythonStdout,
-    setContent,
 })
 </script>
 

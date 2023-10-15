@@ -35,7 +35,7 @@ function stopPython() {
 
 function onPythonFinished({ success, error }: PythonStatus) {
     if (!success) {
-        console.warn("Python failed: " + error)
+        textOutput.value?.appendPythonException(error!)
     }
 }
 
