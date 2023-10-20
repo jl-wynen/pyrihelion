@@ -26,7 +26,7 @@ export class Python {
     private activeInterpreter: Interpreter
     private backupInterpreter?: Interpreter = undefined
     private readonly outputHandler: PythonOutputHandler
-    private readonly state: Ref<PythonState>
+    private readonly interpreterState: Ref<PythonState>
     private readonly makeInterpreter: () => Interpreter
 
     constructor(
@@ -36,7 +36,7 @@ export class Python {
         state: Ref<PythonState>,
     ) {
         this.outputHandler = outputHandler
-        this.state = state
+        this.interpreterState = state
 
         this.makeInterpreter = () => {
             return new Interpreter(
@@ -44,6 +44,10 @@ export class Python {
             )
         }
         this.activeInterpreter = this.makeInterpreter()
+    }
+
+    get state() {
+        return this.interpreterState.value
     }
 
     private workerMessageHandler(
@@ -79,7 +83,7 @@ export class Python {
         msg: RunFinishedMessage,
         callback: (s: PythonStatus) => void,
     ) {
-        this.state.value = PythonState.Ready
+        this.interpreterState.value = PythonState.Ready
         const status = msg.success
             ? { success: true }
             : { success: false, error: msg.error }
@@ -96,7 +100,7 @@ export class Python {
             return // detect ready state when switching to the backup
         }
 
-        this.state.value = PythonState.Ready
+        this.interpreterState.value = PythonState.Ready
         const status = msg.success
             ? { success: true }
             : { success: false, error: msg.error }
@@ -120,7 +124,7 @@ export class Python {
         if (this.activeInterpreter.ready) {
             this.activeInterpreter.reportReady()
         } else {
-            this.state.value = PythonState.Loading
+            this.interpreterState.value = PythonState.Loading
         }
         // else: The interpreter will send a message, and the regular
         // handler takes care of it.
@@ -133,7 +137,7 @@ export class Python {
         }
         console.debug("Running Python code:\n", code)
         this.activeInterpreter.run(code)
-        this.state.value = PythonState.Running
+        this.interpreterState.value = PythonState.Running
     }
 
     terminate() {

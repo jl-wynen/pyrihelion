@@ -30,7 +30,9 @@ function runPython() {
 }
 
 function stopPython() {
-    python?.terminate()
+    if (python?.state === PythonState.Running) {
+        python?.terminate()
+    }
 }
 
 function onPythonFinished({ success, error }: PythonStatus) {
@@ -47,7 +49,21 @@ function onPythonLoaded({ success, error }: PythonStatus) {
     }
 }
 
+function globalKeyboardEventHandler(event: KeyboardEvent) {
+    if (event.shiftKey && event.key == "Enter") {
+        runPython()
+        event.stopPropagation()
+        event.preventDefault()
+    } else if (event.key == "Escape") {
+        stopPython()
+        event.stopPropagation()
+        event.preventDefault()
+    }
+}
+
 onMounted(() => {
+    document.addEventListener("keydown", globalKeyboardEventHandler)
+
     python = new Python(
         {
             stdout: textOutput.value!.appendPythonStdout,
