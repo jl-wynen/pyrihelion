@@ -95,7 +95,6 @@ export class Python {
         msg: LoadFinishedMessage,
         callback: (s: PythonStatus) => void,
     ) {
-        console.log(`onLoadFinished ${workerId}, ${this.activeInterpreter.id}`)
         if (workerId !== this.activeInterpreter.id) {
             return // detect ready state when switching to the backup
         }
@@ -104,7 +103,6 @@ export class Python {
         const status = msg.success
             ? { success: true }
             : { success: false, error: msg.error }
-        console.log("tell user that ready")
         callback(status)
         this.makeBackup()
     }
