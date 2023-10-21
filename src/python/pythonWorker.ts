@@ -36,7 +36,7 @@ export type WorkerMessage =
 
 async function loadPyodide() {
     await loadPyodideOrig({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full",
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full",
     }).then(
         (py) => {
             configurePyodide(py)
