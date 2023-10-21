@@ -39,6 +39,7 @@ function onPythonFinished({ success, error }: PythonStatus) {
     if (!success) {
         textOutput.value?.appendPythonException(error!)
     }
+    textOutput.value?.runFinished(success)
 }
 
 function onPythonLoaded({ success, error }: PythonStatus) {
@@ -81,7 +82,8 @@ onMounted(() => {
 #import time
 #time.sleep(1)
 print(foo(1, 2))
-a
+print('<a href="https://www.google.com">Google</a>')
+print("asd"*30
 `)
 })
 </script>
