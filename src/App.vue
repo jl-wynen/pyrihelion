@@ -6,8 +6,9 @@ import Editor from "./components/Editor.vue"
 import SplitPane from "./components/SplitPane.vue"
 import TextOutput from "./components/TextOutput.vue"
 import ToolBar from "./components/ToolBar.vue"
-import { Python, PythonState, PythonStatus } from "./python"
 
+import * as gangleri from "./gangleri"
+import { Python, PythonState, PythonStatus } from "./python"
 import { pythonState } from "./injectionKeys"
 
 const canvas = ref<InstanceType<typeof Canvas> | null>(null)
@@ -76,15 +77,16 @@ onMounted(() => {
     )
 
     editor.value?.setCode(`def foo(x: int, y: int) -> int:
-        return x + y
+    return x + y
 
 
 #import time
 #time.sleep(1)
 print(foo(1, 2))
-print('<a href="https://www.google.com">Google</a>')
-print("asd"*30
 `)
+
+    gangleri.init(canvas.value!.getRenderContainer())
+    gangleri.start()
 })
 </script>
 
