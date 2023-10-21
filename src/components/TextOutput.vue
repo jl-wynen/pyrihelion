@@ -32,7 +32,10 @@ function appendPythonStderr(text: string) {
 }
 
 function appendPythonException(exception: string) {
-    currentBlock?.appendChild(document.createTextNode(exception))
+    const div = document.createElement("div")
+    div.className = "exception"
+    div.appendChild(document.createTextNode(exception))
+    currentBlock?.appendChild(div)
 }
 
 function createNewBlock() {
@@ -71,6 +74,12 @@ defineExpose({
     overflow-y: scroll;
     word-break: break-all;
     white-space: pre-wrap;
+}
+
+div.exception {
+    background: var(--color-error2);
+    padding: 0.5ex 1ex 0.5ex 1ex;
+    margin: 0.5ex -1ex 0.5ex -1ex;
 }
 
 hr.run-separator {
