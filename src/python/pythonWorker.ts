@@ -52,21 +52,23 @@ async function loadPyodide() {
 let pyodideReadyPromise: Promise<void> | undefined = undefined
 let pyodide: PyodideInterface | undefined = undefined
 
+function outputHandler(which: string) {
+    const decoder = new TextDecoder()
+    return {
+        write: (buffer: Uint8Array) => {
+            postMessage({
+                event: "output",
+                which: which,
+                output: decoder.decode(buffer),
+            })
+            return buffer.length
+        },
+    }
+}
+
 function configurePyodide(pyodide: PyodideInterface) {
-    pyodide.setStdout({
-        batched: handleStdout,
-    })
-    pyodide.setStderr({
-        batched: handleStderr,
-    })
-}
-
-function handleStdout(msg: string) {
-    postMessage({ event: "output", which: "stdout", output: msg })
-}
-
-function handleStderr(msg: string) {
-    postMessage({ event: "output", which: "stderr", output: msg })
+    pyodide.setStdout(outputHandler("stdout"))
+    pyodide.setStderr(outputHandler("stderr"))
 }
 
 /** Generate code that wraps the given Python code.
