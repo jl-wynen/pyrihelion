@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject, Ref, ref } from "vue"
-import { pythonState } from "../injectionKeys"
+import { pythonState } from "../injection"
 import { PythonState } from "../python"
 
 const button = ref<HTMLButtonElement | null>(null)

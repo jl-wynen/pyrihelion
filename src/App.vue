@@ -9,7 +9,7 @@ import ToolBar from "./components/ToolBar.vue"
 
 import * as gangleri from "./gangleri"
 import { Python, PythonState, PythonStatus } from "./python"
-import { pythonState } from "./injectionKeys"
+import { pythonState, updateRate } from "./injection"
 
 const canvas = ref<InstanceType<typeof Canvas> | null>(null)
 const editor = ref<InstanceType<typeof Editor> | null>(null)
@@ -85,7 +85,10 @@ onMounted(() => {
 print(foo(1, 2))
 `)
 
-    gangleri.init(canvas.value!.getRenderContainer())
+    gangleri.init({
+        renderElement: canvas.value!.getRenderContainer(),
+        updateRate: inject(updateRate) as Ref<gangleri.UpdateRate>,
+    })
     gangleri.start()
 })
 </script>

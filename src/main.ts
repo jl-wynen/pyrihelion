@@ -1,4 +1,4 @@
-import { createApp, ref } from "vue"
+import { createApp } from "vue"
 import "./style.scss"
 import App from "./App.vue"
 
@@ -13,11 +13,10 @@ import {
     faUpload,
 } from "@fortawesome/free-solid-svg-icons"
 
-import { pythonState } from "./injectionKeys"
-import { PythonState } from "./python"
+import { provideGlobals } from "./injection"
 
 library.add(faDownload, faPlay, faRotate, faRotateLeft, faStop, faUpload)
 
 const app = createApp(App)
-app.provide(pythonState, ref(PythonState.Loading))
+provideGlobals(app)
 app.component("font-awesome-icon", FontAwesomeIcon).mount("#app")

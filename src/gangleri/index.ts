@@ -1,21 +1,34 @@
 import * as THREE from "three"
 import WebGL from "three/addons/capabilities/WebGL.js"
+import { Ref } from "vue"
+
+import { UpdateRate, UpdateRateTracker } from "./updateRate"
+
+// export type {UpdateRate as default} from "./updateRate"
+// export type UpdateRate
+export type { UpdateRate } from "./updateRate"
 
 let scene: THREE.Scene | undefined = undefined
 let camera: THREE.PerspectiveCamera | undefined = undefined
 let renderer: THREE.WebGLRenderer | undefined = undefined
 
-export function init(renderElement: HTMLElement) {
+let updateRateTracker: UpdateRateTracker | undefined = undefined
+
+export function init(options: {
+    renderElement: HTMLElement
+    updateRate: Ref<UpdateRate>
+}) {
     if (!WebGL.isWebGLAvailable()) {
         const warning = WebGL.getWebGLErrorMessage()
-        renderElement.replaceChildren(warning)
+        options.renderElement.replaceChildren(warning)
         return
     }
+    updateRateTracker = new UpdateRateTracker(options.updateRate)
 
     scene = new THREE.Scene()
     camera = new THREE.PerspectiveCamera(75, 1.0, 0.1, 1000)
     renderer = new THREE.WebGLRenderer({ antialias: true })
-    attachToElement(renderElement)
+    attachToElement(options.renderElement)
 }
 
 function attachToElement(element: HTMLElement) {
@@ -53,6 +66,7 @@ export function start() {
         cube.rotation.x += 0.01
         cube.rotation.y += 0.01
         renderer.render(scene, camera)
+        updateRateTracker?.newFrame()
     }
     animate()
 }

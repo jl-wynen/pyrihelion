@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from "vue"
 import { inject, onMounted, ref } from "vue"
-import { pythonState } from "../injectionKeys.ts"
+import { pythonState } from "../injection.ts"
 import { PythonState } from "../python"
 
 const button = ref<HTMLButtonElement | null>(null)
