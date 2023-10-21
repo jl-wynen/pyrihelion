@@ -1,10 +1,17 @@
 import * as THREE from "three"
+import WebGL from "three/addons/capabilities/WebGL.js"
 
 let scene: THREE.Scene | undefined = undefined
 let camera: THREE.PerspectiveCamera | undefined = undefined
 let renderer: THREE.WebGLRenderer | undefined = undefined
 
 export function init(renderElement: HTMLElement) {
+    if (!WebGL.isWebGLAvailable()) {
+        const warning = WebGL.getWebGLErrorMessage()
+        renderElement.replaceChildren(warning)
+        return
+    }
+
     scene = new THREE.Scene()
     camera = new THREE.PerspectiveCamera(75, 1.0, 0.1, 1000)
     renderer = new THREE.WebGLRenderer({ antialias: true })
