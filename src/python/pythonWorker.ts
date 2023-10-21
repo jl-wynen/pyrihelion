@@ -84,8 +84,7 @@ import traceback
 
 from pyodide.code import eval_code
 
-
-code = '''${rawCode}'''
+code = r'''${rawCode}'''
 
 def not_user_frame(frame):
     return 'File "<exec>"' not in frame
