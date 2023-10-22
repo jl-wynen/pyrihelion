@@ -2,13 +2,15 @@ import * as THREE from "three"
 import WebGL from "three/addons/capabilities/WebGL.js"
 import { Ref } from "vue"
 
+import { Scene } from "./scene"
+import { connectToScene } from "./message"
 import { UpdateRate, UpdateRateTracker } from "./updateRate"
 
 // export type {UpdateRate as default} from "./updateRate"
 // export type UpdateRate
 export type { UpdateRate } from "./updateRate"
 
-let scene: THREE.Scene | undefined = undefined
+let scene: Scene | undefined = undefined
 let camera: THREE.PerspectiveCamera | undefined = undefined
 let renderer: THREE.WebGLRenderer | undefined = undefined
 
@@ -25,7 +27,8 @@ export function init(options: {
     }
     updateRateTracker = new UpdateRateTracker(options.updateRate)
 
-    scene = new THREE.Scene()
+    scene = new Scene()
+    connectToScene(scene)
     camera = new THREE.PerspectiveCamera(75, 1.0, 0.1, 1000)
     renderer = new THREE.WebGLRenderer({ antialias: true })
     attachToElement(options.renderElement)
@@ -58,18 +61,18 @@ function resize(width: number, height: number) {
 }
 
 export function start() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1)
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-    const cube = new THREE.Mesh(geometry, material)
-    scene!.add(cube)
+    // const geometry = new THREE.BoxGeometry(1, 1, 1)
+    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    // const cube = new THREE.Mesh(geometry, material)
+    // scene!.add(cube)
 
     camera!.position.z = 5
 
     function animate() {
         requestAnimationFrame(animate)
-        cube.rotation.x += 0.01
-        cube.rotation.y += 0.01
-        renderer!.render(scene!, camera!)
+        // cube.rotation.x += 0.01
+        // cube.rotation.y += 0.01
+        renderer!.render(scene!.underlying, camera!)
         updateRateTracker?.newFrame()
     }
     animate()

@@ -6,6 +6,8 @@ import type {
     WorkerMessage,
 } from "./pythonWorker"
 
+import { GangleriMessage, sendMessage } from "../gangleri/message"
+
 export type PythonOutputHandler = {
     stdout: (msg: string) => void
     stderr: (msg: string) => void
@@ -58,6 +60,9 @@ export class Python {
             console.debug(`Worker ${workerId} sent message `, event.data)
             const data = event.data
             switch (data.event) {
+                case "gangleri":
+                    this.forwardGangleriMessage(data.payload)
+                    break
                 case "output":
                     this.onOutput(data)
                     break
@@ -69,6 +74,10 @@ export class Python {
                     break
             }
         }
+    }
+
+    private forwardGangleriMessage(message: GangleriMessage) {
+        sendMessage(message)
     }
 
     private onOutput(msg: OutputMessage) {

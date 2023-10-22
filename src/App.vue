@@ -76,13 +76,8 @@ onMounted(() => {
         inject(pythonState) as Ref<PythonState>,
     )
 
-    editor.value?.setCode(`def foo(x: int, y: int) -> int:
-    return x + y
-
-
-#import time
-#time.sleep(1)
-print(foo(1, 2))
+    editor.value?.setCode(`import gangleri_backend as g
+g.create("box")
 `)
 
     gangleri.init({

@@ -1,5 +1,7 @@
 import { loadPyodide as loadPyodideOrig, PyodideInterface } from "pyodide"
 
+import { GangleriMessage, GangleriMessageKind } from "../gangleri/message"
+
 export type RunCommand = {
     cmd: "run"
     code: string
@@ -29,7 +31,13 @@ export type LoadFinishedMessage = {
     error?: string
 }
 
+export type WorkerGangleriMessage = {
+    event: "gangleri"
+    payload: GangleriMessage
+}
+
 export type WorkerMessage =
+    | WorkerGangleriMessage
     | RunFinishedMessage
     | OutputMessage
     | LoadFinishedMessage
@@ -105,6 +113,19 @@ async function handleRunCommand(command: RunCommand) {
     if (pyodide === undefined) {
         return
     }
+
+    const mod = {
+        create: (geometry: string) => {
+            postMessage({
+                event: "gangleri",
+                payload: {
+                    what: GangleriMessageKind.create,
+                    geometry: geometry,
+                },
+            })
+        },
+    }
+    pyodide.registerJsModule("gangleri_backend", mod)
 
     const namespace = pyodide.globals.get("dict")()
     namespace.set("code", command.code)
