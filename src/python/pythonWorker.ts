@@ -80,27 +80,21 @@ function configurePyodide(pyodide: PyodideInterface) {
 // from pyodide, and second to drop frames from our wrapping code.
 // The output should only contain frames that the user wrote or from
 // functions they called themselves.
-function preprocessCode(rawCode: string): string {
+function pythonEntryCode(): string {
     return `import itertools
 import traceback
-
 from pyodide.code import eval_code
-
-code = r'''${rawCode}'''
-
 def not_user_frame(frame):
-    return 'File "<exec>"' not in frame
-
+ return 'File "<exec>"' not in frame
 try:
-    eval_code(code)
+ eval_code(code)
 except Exception as exc:
-    it = iter(traceback.format_exception(exc))
-    head = next(it)
-    it = itertools.dropwhile(not_user_frame, it)
-    next(it)
-    frames = itertools.dropwhile(not_user_frame, it)
-    __user_error__ = head + "".join(frames)
-`
+ it = iter(traceback.format_exception(exc))
+ head = next(it)
+ it = itertools.dropwhile(not_user_frame, it)
+ next(it)
+ frames = itertools.dropwhile(not_user_frame, it)
+ __user_error__ = head + "".join(frames)`
 }
 
 async function handleRunCommand(command: RunCommand) {
@@ -113,9 +107,11 @@ async function handleRunCommand(command: RunCommand) {
     }
 
     const namespace = pyodide.globals.get("dict")()
-    let errorMessage: string | undefined = undefined
+    namespace.set("code", command.code)
+
+    let errorMessage: string | undefined
     try {
-        await pyodide.runPythonAsync(preprocessCode(command.code), {
+        await pyodide.runPythonAsync(pythonEntryCode(), {
             globals: namespace,
         })
         errorMessage = namespace.get("__user_error__")
