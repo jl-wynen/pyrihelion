@@ -1,6 +1,7 @@
 import { loadPyodide as loadPyodideOrig, PyodideInterface } from "pyodide"
 
-import { GangleriMessage, GangleriMessageKind } from "../gangleri/message"
+import { GangleriMessage } from "../gangleri/message"
+import { pyModule } from "../gangleri/pythonBackend"
 
 export type RunCommand = {
     cmd: "run"
@@ -114,18 +115,7 @@ async function handleRunCommand(command: RunCommand) {
         return
     }
 
-    const mod = {
-        create: (geometry: string) => {
-            postMessage({
-                event: "gangleri",
-                payload: {
-                    what: GangleriMessageKind.create,
-                    geometry: geometry,
-                },
-            })
-        },
-    }
-    pyodide.registerJsModule("gangleri_backend", mod)
+    pyodide.registerJsModule("gangleri_backend", pyModule())
 
     const namespace = pyodide.globals.get("dict")()
     namespace.set("code", command.code)

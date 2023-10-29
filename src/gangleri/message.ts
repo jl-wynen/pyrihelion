@@ -8,7 +8,11 @@ export enum GangleriMessageKind {
 export type CreateMessage = {
     what: GangleriMessageKind.create
     id: number
+    pos: Array<number>
     geometry: string
+    geometry_params: Iterable<never>
+    material: string
+    material_params: object
 }
 
 export type GangleriMessage = CreateMessage
@@ -28,21 +32,31 @@ export function sendMessage(message: GangleriMessage) {
 }
 
 function createMesh(message: CreateMessage) {
-    scene?.add(
-        message.id,
-        new THREE.Mesh(createGeometry(message.geometry), createMaterial()),
+    const mesh = new THREE.Mesh(
+        createGeometry(message.geometry, message.geometry_params),
+        createMaterial(message.material, message.material_params),
     )
+    mesh.position.set(message.pos[0], message.pos[1], message.pos[2])
+    scene?.add(message.id, mesh)
 }
 
-function createGeometry(geometry: string): THREE.BufferGeometry {
+function createGeometry(
+    geometry: string,
+    params: Iterable<never>,
+): THREE.BufferGeometry {
     switch (geometry) {
         case "box":
-            return new THREE.BoxGeometry(1, 1, 1)
+            return new THREE.BoxGeometry(...params)
         default:
             throw new Error("Unknown geometry: " + geometry)
     }
 }
 
-function createMaterial() {
-    return new THREE.MeshBasicMaterial({ color: 0x00c000 })
+function createMaterial(material: string, params: object): THREE.Material {
+    switch (material) {
+        case "basic":
+            return new THREE.MeshBasicMaterial(params)
+        default:
+            throw new Error("Unknown material: " + material)
+    }
 }

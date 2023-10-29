@@ -77,7 +77,21 @@ onMounted(() => {
     )
 
     editor.value?.setCode(`import gangleri_backend as g
-g.create("box")
+import js
+from pyodide.ffi import create_proxy, to_js
+
+def to_js_object(x: dict):
+    return to_js(x, dict_converter=js.Object.fromEntries, create_pyproxies=False,)
+
+params = {"color": "#aa9900"}
+#params = js.Object.fromEntries(to_js(params))
+g.create(
+    js.Array.new(0, 0, 0),
+    "box",
+    js.Array.new(1, 1, 1),
+    "basic",
+    to_js_object(params),
+)
 `)
 
     gangleri.init({
