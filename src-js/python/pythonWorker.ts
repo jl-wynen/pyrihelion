@@ -54,8 +54,8 @@ async function loadPyodide() {
     await loadPyodideOrig({
         indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full",
     }).then(
-        (py) => {
-            configurePyodide(py)
+        async (py) => {
+            await configurePyodide(py)
             postMessage({ what: WorkerMessageKind.loadFinished, success: true })
             pyodide = py
         },
@@ -86,9 +86,21 @@ function outputHandler(which: string) {
     }
 }
 
-function configurePyodide(pyodide: PyodideInterface) {
+async function configurePyodide(pyodide: PyodideInterface) {
     pyodide.setStdout(outputHandler("stdout"))
     pyodide.setStderr(outputHandler("stderr"))
+
+    const engineUrl = new URL(
+        "/src-py/dist/engine-0.1-py3-none-any.whl",
+        import.meta.url,
+    )
+    await pyodide.loadPackage(engineUrl.href)
+    // const response = await fetch(engineUrl)
+    // if (!response.ok) {
+    //     console.error("Failed to fetch engine.py")
+    // } else {
+    //     console.log("engine from ", engineUrl, response)
+    // }
 }
 
 /** Generate code that wraps the given Python code.

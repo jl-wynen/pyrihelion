@@ -5,6 +5,7 @@
         "module": "ESNext",
         "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "skipLibCheck": true,
+        "types": ["vite/client"],
 
         "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
@@ -18,6 +19,11 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
-    "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+    "include": [
+        "src-js/**/*.ts",
+        "src-js/**/*.d.ts",
+        "src-js/**/*.tsx",
+        "src-js/**/*.vue"
+    ],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
