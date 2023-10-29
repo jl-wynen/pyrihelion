@@ -94,6 +94,9 @@ g.create(
 )
 g.move_to(0, js.Array.new(1, 0, 0))
 # g.destroy(0)
+
+import gangleri
+print(gangleri.foo())
 `)
 
     gangleri.init({

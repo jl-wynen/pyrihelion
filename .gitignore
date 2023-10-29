@@ -8,9 +8,12 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+py_modules
 dist
 dist-ssr
 *.local
+src-py/*/build
+*.egg-info
 
 # Editor directories and files
 .vscode/*

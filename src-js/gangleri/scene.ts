@@ -11,7 +11,7 @@ export class Scene {
 
     add(id: number, object: THREE.Mesh) {
         if (this.userObjects.has(id)) {
-            console.error("Scene already has an object with id, ", id)
+            console.error("Scene already has an object with id ", id)
             dispose(object)
             return
         }

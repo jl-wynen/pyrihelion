@@ -3,6 +3,8 @@ import { loadPyodide as loadPyodideOrig, PyodideInterface } from "pyodide"
 import { GangleriMessage } from "../gangleri/message"
 import { pyModule } from "../gangleri/pythonBackend"
 
+import { wheel } from "virtual:gangleri-wheel"
+
 export type RunCommand = {
     cmd: "run"
     code: string
@@ -90,10 +92,8 @@ async function configurePyodide(pyodide: PyodideInterface) {
     pyodide.setStdout(outputHandler("stdout"))
     pyodide.setStderr(outputHandler("stderr"))
 
-    const engineUrl = new URL(
-        "/src-py/dist/engine-0.1-py3-none-any.whl",
-        import.meta.url,
-    )
+    console.log("Python wheel:", wheel)
+    const engineUrl = new URL(wheel, import.meta.url)
     await pyodide.loadPackage(engineUrl.href)
     // const response = await fetch(engineUrl)
     // if (!response.ok) {
