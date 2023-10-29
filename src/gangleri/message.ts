@@ -3,6 +3,7 @@ import { Scene } from "./scene"
 
 export enum GangleriMessageKind {
     create,
+    destroy,
 }
 
 export type CreateMessage = {
@@ -15,7 +16,12 @@ export type CreateMessage = {
     material_params: object
 }
 
-export type GangleriMessage = CreateMessage
+export type DestroyMessage = {
+    what: GangleriMessageKind.destroy
+    id: number
+}
+
+export type GangleriMessage = CreateMessage | DestroyMessage
 
 let scene: Scene | undefined = undefined
 
@@ -27,6 +33,9 @@ export function sendMessage(message: GangleriMessage) {
     switch (message.what) {
         case GangleriMessageKind.create:
             createMesh(message)
+            break
+        case GangleriMessageKind.destroy:
+            scene?.remove(message.id)
             break
     }
 }

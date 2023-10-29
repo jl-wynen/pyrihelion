@@ -84,14 +84,15 @@ def to_js_object(x: dict):
     return to_js(x, dict_converter=js.Object.fromEntries, create_pyproxies=False,)
 
 params = {"color": "#aa9900"}
-#params = js.Object.fromEntries(to_js(params))
 g.create(
+    0,
     js.Array.new(0, 0, 0),
     "box",
     js.Array.new(1, 1, 1),
     "basic",
     to_js_object(params),
 )
+# g.destroy(0)
 `)
 
     gangleri.init({

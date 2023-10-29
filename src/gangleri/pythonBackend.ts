@@ -1,6 +1,7 @@
 import { GangleriMessageKind } from "./message"
 
 function create(
+    id: number,
     pos: Array<number>,
     geometry: string,
     geometry_params: Array<never>,
@@ -11,7 +12,7 @@ function create(
         event: "gangleri",
         payload: {
             what: GangleriMessageKind.create,
-            id: 0,
+            id: id,
             pos: pos,
             geometry: geometry,
             geometry_params: geometry_params,
@@ -21,6 +22,16 @@ function create(
     })
 }
 
+function destroy(id: number): void {
+    postMessage({
+        event: "gangleri",
+        payload: {
+            what: GangleriMessageKind.destroy,
+            id: id,
+        },
+    })
+}
+
 export function pyModule() {
-    return { create: create }
+    return { create, destroy }
 }
