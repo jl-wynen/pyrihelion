@@ -5,6 +5,7 @@ import type {
     RunFinishedMessage,
     WorkerMessage,
 } from "./pythonWorker"
+import { WorkerMessageKind } from "./pythonWorker"
 
 import { GangleriMessage, sendMessage } from "../gangleri/message"
 
@@ -59,17 +60,17 @@ export class Python {
         return (workerId: number, event: MessageEvent<WorkerMessage>) => {
             console.debug(`Worker ${workerId} sent message `, event.data)
             const data = event.data
-            switch (data.event) {
-                case "gangleri":
+            switch (data.what) {
+                case WorkerMessageKind.gangleri:
                     this.forwardGangleriMessage(data.payload)
                     break
-                case "output":
+                case WorkerMessageKind.output:
                     this.onOutput(data)
                     break
-                case "finished":
+                case WorkerMessageKind.finished:
                     this.onFinished(data, onFinished)
                     break
-                case "loadFinished":
+                case WorkerMessageKind.loadFinished:
                     this.onLoadFinished(workerId, data, onLoaded)
                     break
             }
@@ -190,7 +191,7 @@ class Interpreter {
         ) => void,
     ) {
         return (event: MessageEvent<WorkerMessage>) => {
-            if (event.data.event !== "loadFinished") {
+            if (event.data.what !== WorkerMessageKind.loadFinished) {
                 console.error(
                     "Unexpected message from Python worker during initialisation: ",
                     event.data,

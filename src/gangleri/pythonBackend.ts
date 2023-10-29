@@ -1,4 +1,5 @@
 import { GangleriMessageKind } from "./message"
+import { WorkerMessageKind } from "../python/pythonWorker"
 
 function create(
     id: number,
@@ -9,7 +10,7 @@ function create(
     material_params: object,
 ): void {
     postMessage({
-        event: "gangleri",
+        what: WorkerMessageKind.gangleri,
         payload: {
             what: GangleriMessageKind.create,
             id: id,
@@ -24,7 +25,7 @@ function create(
 
 function destroy(id: number): void {
     postMessage({
-        event: "gangleri",
+        what: WorkerMessageKind.gangleri,
         payload: {
             what: GangleriMessageKind.destroy,
             id: id,

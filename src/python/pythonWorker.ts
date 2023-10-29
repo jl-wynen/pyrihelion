@@ -14,26 +14,33 @@ export type LoadCommand = {
 
 export type WorkerCommand = RunCommand | LoadCommand
 
+export enum WorkerMessageKind {
+    gangleri,
+    output,
+    finished,
+    loadFinished,
+}
+
 export type RunFinishedMessage = {
-    event: "finished"
+    what: WorkerMessageKind.finished
     success: boolean
     error?: string
 }
 
 export type OutputMessage = {
-    event: "output"
+    what: WorkerMessageKind.output
     which: "stdout" | "stderr"
     output: string
 }
 
 export type LoadFinishedMessage = {
-    event: "loadFinished"
+    what: WorkerMessageKind.loadFinished
     success: boolean
     error?: string
 }
 
 export type WorkerGangleriMessage = {
-    event: "gangleri"
+    what: WorkerMessageKind.gangleri
     payload: GangleriMessage
 }
 
@@ -49,11 +56,15 @@ async function loadPyodide() {
     }).then(
         (py) => {
             configurePyodide(py)
-            postMessage({ event: "loadFinished", success: true })
+            postMessage({ what: WorkerMessageKind.loadFinished, success: true })
             pyodide = py
         },
         (error: string) => {
-            postMessage({ event: "loadFinished", success: false, error: error })
+            postMessage({
+                what: WorkerMessageKind.loadFinished,
+                success: false,
+                error: error,
+            })
         },
     )
 }
@@ -66,7 +77,7 @@ function outputHandler(which: string) {
     return {
         write: (buffer: Uint8Array) => {
             postMessage({
-                event: "output",
+                what: WorkerMessageKind.output,
                 which: which,
                 output: decoder.decode(buffer),
             })
@@ -132,12 +143,12 @@ async function handleRunCommand(command: RunCommand) {
 
     if (errorMessage !== undefined) {
         postMessage({
-            event: "finished",
+            what: WorkerMessageKind.finished,
             success: false,
             error: errorMessage,
         })
     } else {
-        postMessage({ event: "finished", success: true })
+        postMessage({ what: WorkerMessageKind.finished, success: true })
     }
 }
 
