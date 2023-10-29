@@ -28,6 +28,10 @@ export class Scene {
         }
     }
 
+    get(id: number): THREE.Mesh | undefined {
+        return this.userObjects.get(id)
+    }
+
     get underlying(): THREE.Scene {
         return this.scene
     }

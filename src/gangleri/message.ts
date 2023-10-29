@@ -4,6 +4,7 @@ import { Scene } from "./scene"
 export enum GangleriMessageKind {
     create,
     destroy,
+    moveTo,
 }
 
 export type CreateMessage = {
@@ -21,7 +22,13 @@ export type DestroyMessage = {
     id: number
 }
 
-export type GangleriMessage = CreateMessage | DestroyMessage
+export type MoveToMessage = {
+    what: GangleriMessageKind.moveTo
+    id: number
+    pos: Array<number>
+}
+
+export type GangleriMessage = CreateMessage | DestroyMessage | MoveToMessage
 
 let scene: Scene | undefined = undefined
 
@@ -36,6 +43,9 @@ export function sendMessage(message: GangleriMessage) {
             break
         case GangleriMessageKind.destroy:
             scene?.remove(message.id)
+            break
+        case GangleriMessageKind.moveTo:
+            moveTo(message)
             break
     }
 }
@@ -67,5 +77,12 @@ function createMaterial(material: string, params: object): THREE.Material {
             return new THREE.MeshBasicMaterial(params)
         default:
             throw new Error("Unknown material: " + material)
+    }
+}
+
+function moveTo(message: MoveToMessage) {
+    const object = scene?.get(message.id)
+    if (object) {
+        object.position.set(message.pos[0], message.pos[1], message.pos[2])
     }
 }

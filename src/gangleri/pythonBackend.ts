@@ -33,6 +33,17 @@ function destroy(id: number): void {
     })
 }
 
+function moveTo(id: number, pos: Array<number>): void {
+    postMessage({
+        what: WorkerMessageKind.gangleri,
+        payload: {
+            what: GangleriMessageKind.moveTo,
+            id: id,
+            pos: pos,
+        },
+    })
+}
+
 export function pyModule() {
-    return { create, destroy }
+    return { create, destroy, move_to: moveTo }
 }

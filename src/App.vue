@@ -92,6 +92,7 @@ g.create(
     "basic",
     to_js_object(params),
 )
+g.move_to(0, js.Array.new(1, 0, 0))
 # g.destroy(0)
 `)
 
