@@ -1,0 +1,9 @@
+[build-system]
+requires = [
+    "setuptools>=68",
+]
+
+[project]
+name = "gangleri"
+requires-python = ">=3.11"
+version = "0.1"
