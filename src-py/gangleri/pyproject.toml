@@ -5,5 +5,37 @@ requires = [
 
 [project]
 name = "gangleri"
+description = "High-level Python wrapper for the gangleri engine."
+license = {"file" = "LICENSE"}
+authors = [{name="Jan-Lukas Wynen"}]
 requires-python = ">=3.11"
 version = "0.1"
+
+[tool.mypy]
+mypy_path = "src-py"
+ignore_missing_imports = true
+enable_error_code = [
+    "ignore-without-code",
+    "redundant-expr",
+    "truthy-bool",
+]
+strict = true
+show_error_codes = true
+warn_unreachable = true
+
+[tool.ruff]
+line-length = 88
+select = ["B", "D", "E", "F", "I", "S", "T20", "PGH", "FBT003", "RUF"]
+ignore = [
+    "S324", # insecure hsh function; we don't use hashing for security
+    "E741", "E742", "E743", # do not use names ‘l’, ‘O’, or ‘I’; they are not a problem with a proper font
+    "D105",
+]
+extend-exclude = [".*", "__pycache__", "build", "dist", "venv"]
+fixable = ["I001"]
+
+[tool.ruff.isort]
+known-first-party = ["gangleri", "pyrihelion"]
+
+[tool.ruff.pydocstyle]
+convention = "numpy"

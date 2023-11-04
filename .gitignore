@@ -25,3 +25,7 @@ src-py/*/build
 *.njsproj
 *.sln
 *.sw?
+
+# static analysis
+.ruff_cache
+.mypy_cache

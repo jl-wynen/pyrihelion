@@ -76,27 +76,33 @@ onMounted(() => {
         inject(pythonState) as Ref<PythonState>,
     )
 
-    editor.value?.setCode(`import gangleri_backend as g
-import js
-from pyodide.ffi import create_proxy, to_js
+    editor.value?.setCode(`from gangleri import Box
 
-def to_js_object(x: dict):
-    return to_js(x, dict_converter=js.Object.fromEntries, create_pyproxies=False,)
+b = Box(pos=[0, 0, 0], size=[1, 1, 1], color="#aa9900")
 
-params = {"color": "#aa9900"}
-g.create(
-    0,
-    js.Array.new(0, 0, 0),
-    "box",
-    js.Array.new(1, 1, 1),
-    "basic",
-    to_js_object(params),
-)
-g.move_to(0, js.Array.new(1, 0, 0))
-# g.destroy(0)
 
-import gangleri
-print(gangleri.foo())
+# import gangleri_backend as g
+# import js
+# from pyodide.ffi import create_proxy, to_js
+
+# def to_js_object(x: dict):
+#     return to_js(x, dict_converter=js.Object.fromEntries, create_pyproxies=False,)
+
+# params = {"color": "#aa9900"}
+# g.create(
+#     0,
+#     js.Array.new(0, 0, 0),
+#     "box",
+#     js.Array.new(1, 1, 1),
+#     "basic",
+#     to_js_object(params),
+# )
+# # g.move_to(0, js.Array.new(1, 0, 0))
+# # g.destroy(0)
+
+# import gangleri
+# v = gangleri.Vector3(0, 0, 0, parent_id=0)
+# v.x = 1
 `)
 
     gangleri.init({

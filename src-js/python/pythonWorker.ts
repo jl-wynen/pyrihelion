@@ -92,15 +92,9 @@ async function configurePyodide(pyodide: PyodideInterface) {
     pyodide.setStdout(outputHandler("stdout"))
     pyodide.setStderr(outputHandler("stderr"))
 
-    console.log("Python wheel:", wheel)
+    console.debug("Loading python wheel:", wheel)
     const engineUrl = new URL(wheel, import.meta.url)
     await pyodide.loadPackage(engineUrl.href)
-    // const response = await fetch(engineUrl)
-    // if (!response.ok) {
-    //     console.error("Failed to fetch engine.py")
-    // } else {
-    //     console.log("engine from ", engineUrl, response)
-    // }
 }
 
 /** Generate code that wraps the given Python code.
