@@ -76,34 +76,21 @@ onMounted(() => {
         inject(pythonState) as Ref<PythonState>,
     )
 
-    editor.value?.setCode(`from gangleri import Box, init
+    editor.value?.setCode(`import math
+from time import sleep
+
+from gangleri import Sphere, init, update
 
 init()
-b = Box(pos=[0, 0, 0], size=[1, 1, 1], color="#aa9900")
-b.pos.x = 1
+s = Sphere(pos=[0, 0, 0], radius=1, color="#aa9900")
 
-# import gangleri_backend as g
-# import js
-# from pyodide.ffi import create_proxy, to_js
-
-# def to_js_object(x: dict):
-#     return to_js(x, dict_converter=js.Object.fromEntries, create_pyproxies=False,)
-
-# params = {"color": "#aa9900"}
-# g.create(
-#     0,
-#     js.Array.new(0, 0, 0),
-#     "box",
-#     js.Array.new(1, 1, 1),
-#     "basic",
-#     to_js_object(params),
-# )
-# # g.move_to(0, js.Array.new(1, 0, 0))
-# # g.destroy(0)
-
-# import gangleri
-# v = gangleri.Vector3(0, 0, 0, parent_id=0)
-# v.x = 1
+for t in range(1000):
+  r = max(abs(math.cos(t*0.01)), 0.2)
+  x = r * math.cos(t*0.1)
+  y = 2*r*math.sin(t*0.1)
+  s.pos = [x, y, 0]
+  update()
+  sleep(1/60)
 `)
 
     gangleri.init({

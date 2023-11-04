@@ -53,6 +53,15 @@ function clear(): void {
     })
 }
 
+function update(): void {
+    postMessage({
+        what: WorkerMessageKind.gangleri,
+        payload: {
+            what: GangleriMessageKind.update,
+        },
+    })
+}
+
 export function pyModule() {
-    return { create, destroy, move_to: moveTo, clear }
+    return { create, destroy, move_to: moveTo, clear, update }
 }

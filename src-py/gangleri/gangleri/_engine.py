@@ -9,3 +9,8 @@ def clear() -> None:
 def init() -> None:
     """Initialize the engine for the current Python process."""
     backend.clear()
+
+
+def update() -> None:
+    """Update the scene by applying queued commands and redrawing."""
+    backend.update()
