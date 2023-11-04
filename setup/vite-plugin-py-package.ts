@@ -1,32 +1,33 @@
-import { exec } from "child_process"
+import { execSync } from "child_process"
 import { readdirSync } from "fs"
 import { join } from "path"
 
 export function pyPackagePlugin(name, path) {
     const moduleId = `virtual:${name}-wheel`
     const resolvedModuleId = "\0" + moduleId
-    const outDir = "py_modules"
+    const outDir = "dist/py_modules"
     return {
         name: `py-package-${name}`,
-        resolveId(id) {
+        resolveId(id: string) {
             if (id !== moduleId) {
                 return null
             }
             return resolvedModuleId
         },
-        async load(id) {
+        load(id: string) {
             if (id !== resolvedModuleId) {
                 return null
             }
-            await exec(
+            // Synchronous to avoid race conditions with other parts of the bundler.
+            execSync(
                 `python3 -m build -w -o ${outDir} ${path}`,
-                (error, stdout, stderr) => {
+                (error: boolean, stdout: string, stderr: string) => {
                     if (error) {
                         return this.error(stdout + stderr)
                     }
                 },
             )
-            const wheels = readdirSync(outDir).filter((file) => {
+            const wheels = readdirSync(outDir).filter((file: string) => {
                 return file.startsWith(name)
             })
             if (wheels.length !== 1) {
