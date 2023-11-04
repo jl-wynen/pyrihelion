@@ -32,6 +32,14 @@ export class Scene {
         return this.userObjects.get(id)
     }
 
+    clear(): void {
+        for (const object of this.userObjects.values()) {
+            this.scene.remove(object)
+            dispose(object)
+        }
+        this.userObjects.clear()
+    }
+
     get underlying(): THREE.Scene {
         return this.scene
     }

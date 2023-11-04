@@ -76,10 +76,11 @@ onMounted(() => {
         inject(pythonState) as Ref<PythonState>,
     )
 
-    editor.value?.setCode(`from gangleri import Box
+    editor.value?.setCode(`from gangleri import Box, init
 
+init()
 b = Box(pos=[0, 0, 0], size=[1, 1, 1], color="#aa9900")
-
+b.pos.x = 1
 
 # import gangleri_backend as g
 # import js

@@ -44,6 +44,15 @@ function moveTo(id: number, pos: Array<number>): void {
     })
 }
 
+function clear(): void {
+    postMessage({
+        what: WorkerMessageKind.gangleri,
+        payload: {
+            what: GangleriMessageKind.clear,
+        },
+    })
+}
+
 export function pyModule() {
-    return { create, destroy, move_to: moveTo }
+    return { create, destroy, move_to: moveTo, clear }
 }

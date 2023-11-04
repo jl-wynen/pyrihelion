@@ -39,3 +39,26 @@ class Box(Entity):
             "basic",
             dict_to_js_object({"color": color}),
         )
+
+
+class Sphere(Entity):
+    """A sphere."""
+
+    def __init__(
+        self,
+        *,
+        pos: list[float] | tuple[float],
+        radius: float,
+        color: str,
+        width_segments: int = 32,
+        height_segments: int = 32,
+    ) -> None:
+        super().__init__(pos)
+        backend.create(
+            self._id,
+            self._pos.__as_js__(),
+            "sphere",
+            js.Array.new(radius, width_segments, height_segments),
+            "basic",
+            dict_to_js_object({"color": color}),
+        )

@@ -2,9 +2,10 @@ import * as THREE from "three"
 import { Scene } from "./scene"
 
 export enum GangleriMessageKind {
+    moveTo,
     create,
     destroy,
-    moveTo,
+    clear,
 }
 
 export type CreateMessage = {
@@ -28,7 +29,15 @@ export type MoveToMessage = {
     pos: Array<number>
 }
 
-export type GangleriMessage = CreateMessage | DestroyMessage | MoveToMessage
+export type ClearMessage = {
+    what: GangleriMessageKind.clear
+}
+
+export type GangleriMessage =
+    | MoveToMessage
+    | CreateMessage
+    | DestroyMessage
+    | ClearMessage
 
 let scene: Scene | undefined = undefined
 
@@ -38,14 +47,17 @@ export function connectToScene(s: Scene) {
 
 export function sendMessage(message: GangleriMessage) {
     switch (message.what) {
+        case GangleriMessageKind.moveTo:
+            moveTo(message)
+            break
         case GangleriMessageKind.create:
             createMesh(message)
             break
         case GangleriMessageKind.destroy:
             scene?.remove(message.id)
             break
-        case GangleriMessageKind.moveTo:
-            moveTo(message)
+        case GangleriMessageKind.clear:
+            scene?.clear()
             break
     }
 }
@@ -66,6 +78,8 @@ function createGeometry(
     switch (geometry) {
         case "box":
             return new THREE.BoxGeometry(...params)
+        case "sphere":
+            return new THREE.SphereGeometry(...params)
         default:
             throw new Error("Unknown geometry: " + geometry)
     }
