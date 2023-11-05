@@ -2,6 +2,7 @@
 import { inject, onMounted, ref } from "vue"
 import type { Ref } from "vue"
 import Canvas from "./components/Canvas.vue"
+import CookieBanner from "./components/CookieBanner.vue"
 import Editor from "./components/Editor.vue"
 import SplitPane from "./components/SplitPane.vue"
 import TextOutput from "./components/TextOutput.vue"
@@ -118,6 +119,7 @@ for t in range(1000):
             <Canvas ref="canvas" />
         </template>
     </SplitPane>
+    <CookieBanner />
 </template>
 
 <style scoped></style>

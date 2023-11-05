@@ -15,7 +15,8 @@
   --color-text-on-color0: #eee;
   --color-text-on-color1: #aaa;
 
-  --color-info: #1c568a;
+  --color-info0: #1c568a;
+  --color-info1: #224d73;
 
   --color-success0: #64a148;
   --color-success1: #5e8f47;
@@ -48,6 +49,22 @@ body {
   }
 }
 
+button {
+  border: none;
+  border-radius: 0;
+  background-color: var(--color-on-background1);
+  color: var(--color-text-on-color0);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-on-background1);
+  }
+
+  &:enabled:active {
+    background-color: var(--color-on-background0);
+  }
+}
+
 $toolbar-height: 2em;
 
 .toolbar {
@@ -61,21 +78,10 @@ $toolbar-height: 2em;
   padding: 3pt 1em 3pt 1em;
 
   button {
-    border: none;
-    border-radius: 0;
     width: 2.7em;
     height: 100%;
     background-color: inherit;
     color: var(--color-text-on-color0);
-    cursor: pointer;
-
-    &:hover {
-      background-color: var(--color-on-background1);
-    }
-
-    &:enabled:active {
-      background-color: var(--color-on-background0);
-    }
   }
 }
 
