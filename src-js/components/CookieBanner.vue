@@ -2,16 +2,15 @@
 import { ref } from "vue"
 import { preferences } from "../preferences"
 
-const show = ref(preferences.cookies === null)
-
+const show = ref(preferences.value.cookies === null)
 function accept() {
     show.value = false
-    preferences.cookies = true
+    preferences.value.cookies = true
 }
 
 function reject() {
     show.value = false
-    preferences.cookies = false
+    preferences.value.cookies = false
 }
 </script>
 
