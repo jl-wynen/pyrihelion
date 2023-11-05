@@ -20,6 +20,7 @@ const toolBar = ref<InstanceType<typeof ToolBar> | null>(null)
 let python: Python | undefined
 
 function runPython() {
+    editor.value?.saveCode()
     if (python === undefined) {
         console.error("Cannot run Python, Pyodide is not loaded.")
         return
