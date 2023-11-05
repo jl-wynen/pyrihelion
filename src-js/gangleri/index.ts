@@ -70,3 +70,7 @@ export function start() {
     }
     animate()
 }
+
+export function toggleAxesHelper() {
+    scene?.toggleAxes()
+}

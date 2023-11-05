@@ -3,6 +3,7 @@ import * as THREE from "three"
 export class Scene {
     private readonly scene: THREE.Scene
     private userObjects: Map<number, THREE.Mesh>
+    private axesHelper: THREE.AxesHelper | undefined = undefined
 
     constructor() {
         this.scene = new THREE.Scene()
@@ -38,6 +39,18 @@ export class Scene {
             dispose(object)
         }
         this.userObjects.clear()
+    }
+
+    toggleAxes(): void {
+        console.log("toggle")
+        if (this.axesHelper === undefined) {
+            this.axesHelper = new THREE.AxesHelper(1)
+            this.scene.add(this.axesHelper)
+        } else {
+            this.scene.remove(this.axesHelper)
+            this.axesHelper.dispose()
+            this.axesHelper = undefined
+        }
     }
 
     get underlying(): THREE.Scene {
