@@ -24,12 +24,19 @@ defineExpose({
                 id="toggle-axes"
                 @change="toggleAxesHelper"
             />
-            <label for="toggle-axes">x</label>
+            <label for="toggle-axes"
+                ><img src="src-js/assets/icons/axes.svg" alt="x"
+            /></label>
+            <input type="button" id="test-btn" />
+            <label for="test-btn"><span>b</span></label>
         </div>
     </div>
 </template>
 
 <style lang="scss">
+$button-size: 1.8rem;
+$button-padding: 0.3rem;
+
 #canvas-wrapper {
     position: relative;
     width: 100%;
@@ -45,8 +52,8 @@ defineExpose({
 #update-rate {
     position: absolute;
     top: 0;
-    right: 5em;
-    padding: 1ex;
+    right: $button-size;
+    padding: 0.5rem 1.5rem 0.5rem 0.5rem;
     text-align: left;
     z-index: 100;
     display: block;
@@ -58,14 +65,15 @@ defineExpose({
     position: absolute;
     top: 0;
     right: 0;
-    padding: 1ex;
+    padding: 0.5rem;
     z-index: 100;
-    display: block;
     color: white;
     user-select: none;
+    display: flex;
+    flex-direction: column;
 }
 
-#canvas-toolbar input[type="checkbox"] {
+#canvas-toolbar input {
     height: 0;
     width: 0;
     visibility: hidden;
@@ -73,15 +81,17 @@ defineExpose({
 }
 
 #canvas-toolbar label {
-    display: table-cell;
-    width: 2em;
-    height: 2em;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box;
+    padding: $button-padding;
+    width: $button-size;
+    height: $button-size;
     background: #3232327f;
     border: 1px solid #7070707f;
     border-radius: 5px;
     cursor: pointer;
-    text-align: center;
-    vertical-align: middle;
 
     &:hover {
         background: #4d4d4d9f;
@@ -104,19 +114,10 @@ defineExpose({
     }
 }
 
-#canvas-toolbar button {
-    background: #3232327f;
-    border: 1px solid #7070707f;
-    border-radius: 5px;
-    width: 2em;
-    height: 2em;
-
-    &:hover {
-        background: #4d4d4d9f;
-    }
-
-    &:active {
-        background: #6060609f;
-    }
+#canvas-toolbar label img,
+#canvas-toolbar label span {
+    max-width: $button-size - 2 * $button-padding;
+    max-height: $button-size - 2 * $button-padding;
+    margin: 0 auto;
 }
 </style>
