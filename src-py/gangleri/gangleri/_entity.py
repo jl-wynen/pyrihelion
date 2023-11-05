@@ -15,6 +15,10 @@ class Entity:
         self._id = generate_id()
         self._pos = Vector3.from_elements(pos, parent_id=self._id, update=False)
 
+    def remove(self) -> None:
+        backend.destroy(self._id)
+        self._pos.detach()
+
     @property
     def pos(self) -> Vector3:
         return self._pos

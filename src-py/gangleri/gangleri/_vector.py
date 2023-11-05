@@ -24,7 +24,7 @@ class Vector3:
         cls,
         elements: Vector3 | Iterable[float],
         *,
-        parent_id: int | None,
+        parent_id: int | None = None,
         update: bool = True,
     ) -> Vector3:
         vec = cls(0, 0, 0, parent_id=parent_id)
@@ -40,6 +40,9 @@ class Vector3:
             self._x, self._y, self._z = elements
         if update:
             self._update()
+
+    def detach(self) -> None:
+        self._parent_id = None
 
     @property
     def x(self) -> float:
