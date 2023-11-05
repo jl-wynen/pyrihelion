@@ -13,4 +13,4 @@ parserOptions:
 plugins:
   - "@typescript-eslint"
   - vue
-rules: {}
+rules: { "@typescript-eslint/ban-ts-comment": off }

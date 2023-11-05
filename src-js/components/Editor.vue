@@ -6,9 +6,36 @@ import { oneDark } from "@codemirror/theme-one-dark"
 import { EditorView, basicSetup } from "codemirror"
 import { EditorState } from "@codemirror/state"
 
+import { accessDatabase } from "../database"
+import { preferences } from "../preferences"
+
 let view: EditorView | null = null
 
+const codeLoader = {
+    op: (store: IDBObjectStore) => {
+        const request = store.get("userCode")
+        request.onsuccess = () => {
+            setCode(request.result?.code ?? "default code")
+        }
+    },
+    onerror: () => {
+        console.error("Failed to get code")
+        setCode("default code")
+    },
+}
+
+const codeSaver = {
+    op: (store: IDBObjectStore) => {
+        store.put({ id: "userCode", code: getCode() })
+    },
+    onerror: () => {
+        console.error("Failed to save code")
+    },
+}
+
 onMounted(() => {
+    accessDatabase(codeLoader, "code", "readonly")
+
     let state = EditorState.create({
         extensions: [basicSetup, python(), oneDark],
     })
@@ -32,8 +59,15 @@ function setCode(code: string) {
     )
 }
 
+function saveCode() {
+    if (preferences.value.cookies === true) {
+        accessDatabase(codeSaver, "code", "readwrite")
+    }
+}
+
 defineExpose({
     getCode,
+    saveCode,
     setCode,
 })
 </script>
