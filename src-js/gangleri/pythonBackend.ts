@@ -65,3 +65,4 @@ function update(): void {
 export function pyModule() {
     return { create, destroy, move_to: moveTo, clear, update }
 }
+// TODO init: clear objects AND queue

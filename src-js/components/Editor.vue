@@ -6,44 +6,40 @@ import { oneDark } from "@codemirror/theme-one-dark"
 import { EditorView, basicSetup } from "codemirror"
 import { EditorState } from "@codemirror/state"
 
-import { accessDatabase } from "../database"
+import { loadFromDatabase, saveToDatabase } from "../database"
 import { preferences } from "../preferences"
 
 let view: EditorView | null = null
 
-const codeLoader = {
-    op: (store: IDBObjectStore) => {
-        const request = store.get("userCode")
-        request.onsuccess = () => {
-            setCode(request.result?.code ?? "default code")
-        }
-    },
-    onerror: () => {
-        console.error("Failed to get code")
-        setCode("default code")
-    },
+async function defaultCode(): Promise<string> {
+    const request = await fetch(
+        new URL("../../src-py/default-code/default.py", import.meta.url),
+    )
+    if (request.ok) return request.text()
+    return "# Failed to load default code\n"
 }
 
-const codeSaver = {
-    op: (store: IDBObjectStore) => {
-        store.put({ id: "userCode", code: getCode() })
-    },
-    onerror: () => {
-        console.error("Failed to save code")
-    },
+async function loadInitialCode(): Promise<string> {
+    return await loadFromDatabase("code", "userCode").then(
+        (object) => {
+            return object.code
+        },
+        () => {
+            return defaultCode()
+        },
+    )
 }
 
-onMounted(() => {
-    accessDatabase(codeLoader, "code", "readonly")
-
+onMounted(async () => {
     let state = EditorState.create({
         extensions: [basicSetup, python(), oneDark],
     })
-
     view = new EditorView({
         state: state,
         parent: document.getElementById("editor")!,
     })
+
+    setCode(await loadInitialCode())
 })
 
 function getCode(): string {
@@ -59,9 +55,9 @@ function setCode(code: string) {
     )
 }
 
-function saveCode() {
+async function saveCode() {
     if (preferences.value.cookies === true) {
-        accessDatabase(codeSaver, "code", "readwrite")
+        await saveToDatabase("code", { id: "userCode", code: getCode() })
     }
 }
 
