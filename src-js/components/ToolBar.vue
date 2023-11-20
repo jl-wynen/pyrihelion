@@ -35,9 +35,12 @@ defineEmits([
 
 <template>
     <span class="toolbar">
-        <ButtonDownload ref="buttonDownload" @runCode="$emit('downloadCode')" />
-        <ButtonUpload ref="buttonUpload" @runCode="$emit('uploadCode')" />
-        <ButtonReset ref="buttonReset" @runCode="$emit('resetCode')" />
+        <ButtonDownload
+            ref="buttonDownload"
+            @downloadCode="$emit('downloadCode')"
+        />
+        <ButtonUpload ref="buttonUpload" @uploadCode="$emit('uploadCode')" />
+        <ButtonReset ref="buttonReset" @resetCode="$emit('resetCode')" />
         <ButtonRun ref="buttonRun" @runCode="$emit('runCode')" />
         <ButtonStop ref="buttonStop" @stopRunning="$emit('stopRunning')" />
     </span>

@@ -43,6 +43,10 @@ function onPythonFinished({ success, error }: PythonStatus) {
     textOutput.value?.runFinished(success)
 }
 
+async function resetCode() {
+    await editor.value?.resetCode()
+}
+
 async function globalKeyboardEventHandler(event: KeyboardEvent) {
     if (event.shiftKey && event.key == "Enter") {
         await runPython()
@@ -76,7 +80,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <ToolBar ref="toolBar" @runCode="runPython" @stopRunning="stopPython" />
+    <ToolBar
+        ref="toolBar"
+        @runCode="runPython"
+        @stopRunning="stopPython"
+        @resetCode="resetCode"
+    />
     <SplitPane direction="horizontal" :initial_fraction="0.5">
         <template v-slot:first>
             <SplitPane direction="vertical" :initial_fraction="0.8">

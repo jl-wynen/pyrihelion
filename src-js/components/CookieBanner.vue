@@ -16,7 +16,7 @@ function reject() {
 
 <template>
     <Transition>
-        <div class="cookie-banner" v-if="show">
+        <div class="cookie-banner modal-overlay" v-if="show">
             <div class="cookie-dialog">
                 <h1>Privacy</h1>
                 <p>
@@ -46,15 +46,8 @@ function reject() {
 
 <style scoped lang="scss">
 .cookie-banner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
-    z-index: 1000;
 }
 
 .cookie-dialog {
@@ -83,13 +76,8 @@ function reject() {
     }
 }
 
-.v-leave-active,
 .v-leave-active > .cookie-dialog {
     transition: all 0.1s ease-in;
-}
-
-.v-leave-to {
-    opacity: 0;
 }
 
 .v-leave-to > .cookie-dialog {

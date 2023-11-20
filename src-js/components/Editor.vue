@@ -61,8 +61,13 @@ async function saveCode() {
     }
 }
 
+async function resetCode() {
+    setCode(await defaultCode())
+}
+
 defineExpose({
     getCode,
+    resetCode,
     saveCode,
     setCode,
 })
