@@ -28,9 +28,14 @@ const emit = defineEmits(["resetCode"])
     <button ref="button" class="reset-button" @click="requestReset">
         <font-awesome-icon icon="fa-solid fa-rotate-left" class="reset-icon" />
     </button>
-    <ConfirmDialog ref="confirmDialog" @yes="doReset" @no="cancelReset"
-        >Are you sure?</ConfirmDialog
+    <ConfirmDialog
+        ref="confirmDialog"
+        @yes="doReset"
+        @no="cancelReset"
+        :positive="false"
     >
+        Reset code?
+    </ConfirmDialog>
 </template>
 
 <style lang="scss">

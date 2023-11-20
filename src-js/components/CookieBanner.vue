@@ -53,6 +53,7 @@ function reject() {
 .cookie-dialog {
     background-color: var(--color-background0);
     color: var(--color-text0);
+    border: 4px solid var(--color-background1);
 
     margin-top: auto;
     padding: 1rem;

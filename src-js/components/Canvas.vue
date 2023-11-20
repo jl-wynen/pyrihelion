@@ -24,8 +24,8 @@ defineExpose({
                 id="toggle-axes"
                 @change="toggleAxesHelper"
             />
-            <label for="toggle-axes"
-                ><img src="src-js/assets/icons/axes.svg" alt="x"
+            <label for="toggle-axes">
+                <img src="src-js/assets/icons/axes.svg" alt="x"
             /></label>
             <input type="button" id="test-btn" />
             <label for="test-btn"><span>b</span></label>
