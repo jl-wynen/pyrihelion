@@ -3,6 +3,8 @@ import { inject, Ref } from "vue"
 import { updateRate as updateRateKey } from "../injection"
 import { UpdateRate, toggleAxesHelper } from "../gangleri"
 
+import AxesIcon from "../assets/icons/axes.svg"
+
 const updateRate = inject(updateRateKey) as Ref<UpdateRate>
 
 function getRenderContainer(): HTMLElement {
@@ -25,8 +27,8 @@ defineExpose({
                 @change="toggleAxesHelper"
             />
             <label for="toggle-axes">
-                <img src="src-js/assets/icons/axes.svg" alt="x"
-            /></label>
+                <AxesIcon />
+            </label>
             <input type="button" id="test-btn" />
             <label for="test-btn"><span>b</span></label>
         </div>
