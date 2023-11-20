@@ -56,12 +56,12 @@ button {
   color: var(--color-text-on-color0);
   cursor: pointer;
 
-  &:hover {
-    background-color: var(--color-on-background1);
+  &:enabled:hover {
+    filter: brightness(0.9);
   }
 
   &:enabled:active {
-    background-color: var(--color-on-background0);
+    filter: brightness(0.8);
   }
 }
 

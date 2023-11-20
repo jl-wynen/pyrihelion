@@ -70,10 +70,6 @@ function reject() {
     margin-right: 1em;
     width: 8em;
     background-color: var(--color-info0);
-
-    &:hover {
-        background-color: var(--color-info1);
-    }
 }
 
 .v-leave-active > .cookie-dialog {
