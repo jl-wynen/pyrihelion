@@ -17,6 +17,7 @@ export type PythonOutputHandler = {
 export enum PythonState {
     Ready,
     Running,
+    RunningBackupLoading,
     Loading,
 }
 
@@ -34,7 +35,6 @@ export class Python {
 
     constructor(
         outputHandler: PythonOutputHandler,
-        onLoaded: (s: PythonStatus) => void,
         onFinished: (s: PythonStatus) => void,
         state: Ref<PythonState>,
     ) {
@@ -42,9 +42,7 @@ export class Python {
         this.interpreterState = state
 
         this.makeInterpreter = () => {
-            return new Interpreter(
-                this.workerMessageHandler(onLoaded, onFinished),
-            )
+            return new Interpreter(this.workerMessageHandler(onFinished))
         }
         this.activeInterpreter = this.makeInterpreter()
     }
@@ -53,12 +51,8 @@ export class Python {
         return this.interpreterState.value
     }
 
-    private workerMessageHandler(
-        onLoaded: (s: PythonStatus) => void,
-        onFinished: (s: PythonStatus) => void,
-    ) {
+    private workerMessageHandler(onFinished: (s: PythonStatus) => void) {
         return (workerId: number, event: MessageEvent<WorkerMessage>) => {
-            console.debug(`Worker ${workerId} sent message `, event.data)
             const data = event.data
             switch (data.what) {
                 case WorkerMessageKind.gangleri:
@@ -71,7 +65,7 @@ export class Python {
                     this.onFinished(data, onFinished)
                     break
                 case WorkerMessageKind.loadFinished:
-                    this.onLoadFinished(workerId, data, onLoaded)
+                    this.onLoadFinished(workerId, data)
                     break
             }
         }
@@ -100,20 +94,20 @@ export class Python {
         callback(status)
     }
 
-    private onLoadFinished(
-        workerId: number,
-        msg: LoadFinishedMessage,
-        callback: (s: PythonStatus) => void,
-    ) {
+    private onLoadFinished(workerId: number, msg: LoadFinishedMessage) {
+        if (!msg.success) {
+            throw new Error("Failed to load Python: " + msg.error)
+        }
         if (workerId !== this.activeInterpreter.id) {
-            return // detect ready state when switching to the backup
+            if (
+                this.interpreterState.value == PythonState.RunningBackupLoading
+            ) {
+                this.interpreterState.value = PythonState.Running
+            }
+            return
         }
 
         this.interpreterState.value = PythonState.Ready
-        const status = msg.success
-            ? { success: true }
-            : { success: false, error: msg.error }
-        callback(status)
         this.makeBackup()
     }
 
@@ -143,9 +137,20 @@ export class Python {
             console.error("Interpreter not ready")
             return
         }
-        console.debug("Running Python code:\n", code)
+
+        if (this.state === PythonState.Running) {
+            console.debug("Restarting Python")
+            this.terminate()
+        } else if (this.state === PythonState.RunningBackupLoading) {
+            console.error("Cannot restart Python, backup is not ready")
+            return
+        } else {
+            console.debug("Running Python")
+        }
         this.activeInterpreter.run(code)
-        this.interpreterState.value = PythonState.Running
+        this.interpreterState.value = !this.backupInterpreter?.ready
+            ? PythonState.RunningBackupLoading
+            : PythonState.Running
     }
 
     terminate() {

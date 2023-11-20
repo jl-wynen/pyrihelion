@@ -20,22 +20,20 @@ const toolBar = ref<InstanceType<typeof ToolBar> | null>(null)
 let python: Python | undefined
 
 async function runPython() {
-    await editor.value?.saveCode()
-    if (python === undefined) {
-        console.error("Cannot run Python, Pyodide is not loaded.")
-        return
-    }
     if (editor.value === null) {
         console.error("Cannot run Python, cannot access the editor.")
+        return
+    }
+    await editor.value.saveCode()
+    if (python === undefined) {
+        console.error("Cannot run Python, Pyodide is not loaded.")
         return
     }
     python.run(editor.value!.getCode())
 }
 
 function stopPython() {
-    if (python?.state === PythonState.Running) {
-        python?.terminate()
-    }
+    python?.terminate()
 }
 
 function onPythonFinished({ success, error }: PythonStatus) {
@@ -43,14 +41,6 @@ function onPythonFinished({ success, error }: PythonStatus) {
         textOutput.value?.appendPythonException(error!)
     }
     textOutput.value?.runFinished(success)
-}
-
-function onPythonLoaded({ success, error }: PythonStatus) {
-    if (success) {
-        console.log("Successfully loaded Pyodide")
-    } else {
-        console.error("Failed to load Pyodide: " + error)
-    }
 }
 
 async function globalKeyboardEventHandler(event: KeyboardEvent) {
@@ -73,7 +63,6 @@ onMounted(() => {
             stdout: textOutput.value!.appendPythonStdout,
             stderr: textOutput.value!.appendPythonStderr,
         },
-        onPythonLoaded,
         onPythonFinished,
         inject(pythonState) as Ref<PythonState>,
     )

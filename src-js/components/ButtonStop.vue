@@ -13,7 +13,10 @@ defineEmits(["stopRunning"])
     <button
         ref="button"
         class="stop-button"
-        :disabled="state !== PythonState.Running"
+        :disabled="
+            state !== PythonState.Running &&
+            state !== PythonState.RunningBackupLoading
+        "
         @click="$emit('stopRunning')"
     >
         <font-awesome-icon icon="fa-solid fa-stop" class="stop-icon" />STOP

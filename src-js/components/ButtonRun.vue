@@ -18,7 +18,10 @@ defineEmits(["runCode"])
     <button
         ref="button"
         class="run-button"
-        :disabled="state === PythonState.Loading"
+        :disabled="
+            state === PythonState.Loading ||
+            state === PythonState.RunningBackupLoading
+        "
         @click="$emit('runCode')"
     >
         <div>
