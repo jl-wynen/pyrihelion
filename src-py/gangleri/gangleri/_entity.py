@@ -1,8 +1,8 @@
 from typing import Iterable
 
-import gangleri_backend as backend
 import js
 
+from ._engine import queue_create, queue_destroy
 from ._ffi import dict_to_js_object
 from ._registry import generate_id
 from ._vector import Vector3
@@ -16,7 +16,7 @@ class Entity:
         self._pos = Vector3.from_elements(pos, parent_id=self._id, update=False)
 
     def remove(self) -> None:
-        backend.destroy(self._id)
+        queue_destroy(self._id)
         self._pos.detach()
 
     @property
@@ -35,13 +35,13 @@ class Box(Entity):
         self, *, pos: list[float] | tuple[float], size: Iterable[float], color: str
     ) -> None:
         super().__init__(pos)
-        backend.create(
-            self._id,
-            self._pos.__as_js__(),
-            "box",
-            js.Array.new(*size),
-            "basic",
-            dict_to_js_object({"color": color}),
+        queue_create(
+            id_=self._id,
+            pos=self._pos,
+            geometry="box",
+            geometry_params=js.Array.new(*size),
+            material="basic",
+            material_params=dict_to_js_object({"color": color}),
         )
 
 
@@ -58,11 +58,11 @@ class Sphere(Entity):
         height_segments: int = 32,
     ) -> None:
         super().__init__(pos)
-        backend.create(
-            self._id,
-            self._pos.__as_js__(),
-            "sphere",
-            js.Array.new(radius, width_segments, height_segments),
-            "basic",
-            dict_to_js_object({"color": color}),
+        queue_create(
+            id_=self._id,
+            pos=self._pos,
+            geometry="sphere",
+            geometry_params=js.Array.new(radius, width_segments, height_segments),
+            material="basic",
+            material_params=dict_to_js_object({"color": color}),
         )

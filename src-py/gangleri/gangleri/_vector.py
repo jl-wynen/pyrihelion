@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import Iterable
 
-import gangleri_backend as backend
 import js
+
+from ._engine import queue_move_to
 
 
 class Vector3:
@@ -92,4 +93,4 @@ class Vector3:
 
     def _update(self) -> None:
         if self._parent_id is not None:
-            backend.move_to(self._parent_id, self.__as_js__())
+            queue_move_to(self._parent_id, self)

@@ -43,7 +43,7 @@ export type LoadFinishedMessage = {
 
 export type WorkerGangleriMessage = {
     what: WorkerMessageKind.gangleri
-    payload: GangleriMessage
+    payload: Array<GangleriMessage>
 }
 
 export type WorkerMessage =

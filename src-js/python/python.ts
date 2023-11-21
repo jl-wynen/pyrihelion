@@ -71,8 +71,8 @@ export class Python {
         }
     }
 
-    private forwardGangleriMessage(message: GangleriMessage) {
-        sendMessage(message)
+    private forwardGangleriMessage(message_queue: Array<GangleriMessage>) {
+        sendMessage(message_queue)
     }
 
     private onOutput(msg: OutputMessage) {

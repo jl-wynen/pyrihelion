@@ -3,7 +3,6 @@ import { Scene } from "./scene"
 
 export enum GangleriMessageKind {
     moveTo,
-    update,
     create,
     destroy,
     clear,
@@ -13,10 +12,6 @@ export type MoveToMessage = {
     what: GangleriMessageKind.moveTo
     id: number
     pos: Array<number>
-}
-
-export type UpdateMessage = {
-    what: GangleriMessageKind.update
 }
 
 export type CreateMessage = {
@@ -40,7 +35,6 @@ export type ClearMessage = {
 
 export type GangleriMessage =
     | MoveToMessage
-    | UpdateMessage
     | CreateMessage
     | DestroyMessage
     | ClearMessage
@@ -51,23 +45,22 @@ export function connectToScene(s: Scene) {
     scene = s
 }
 
-export function sendMessage(message: GangleriMessage) {
-    switch (message.what) {
-        case GangleriMessageKind.moveTo:
-            moveTo(message)
-            break
-        case GangleriMessageKind.update:
-            // TODO
-            break
-        case GangleriMessageKind.create:
-            createMesh(message)
-            break
-        case GangleriMessageKind.destroy:
-            scene?.remove(message.id)
-            break
-        case GangleriMessageKind.clear:
-            scene?.clear()
-            break
+export function sendMessage(message_queue: Array<GangleriMessage>) {
+    for (const message of message_queue) {
+        switch (message.what) {
+            case GangleriMessageKind.moveTo:
+                moveTo(message)
+                break
+            case GangleriMessageKind.create:
+                createMesh(message)
+                break
+            case GangleriMessageKind.destroy:
+                scene?.remove(message.id)
+                break
+            case GangleriMessageKind.clear:
+                scene?.clear()
+                break
+        }
     }
 }
 
