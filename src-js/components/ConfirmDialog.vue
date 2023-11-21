@@ -102,8 +102,7 @@ defineEmits(["yes", "no"])
 
 .confirm-positive .no-button,
 .confirm-negative .no-button {
-    background-color: var(--color-warn0);
-    //background-color: var(--color-on-background1);
+    background-color: var(--color-on-background2);
 }
 
 .v-leave-active > .confirm-dialog {
