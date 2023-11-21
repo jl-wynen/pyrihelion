@@ -23,6 +23,7 @@ defineEmits(["runCode"])
             state === PythonState.RunningBackupLoading
         "
         @click="$emit('runCode')"
+        @mousedown.prevent=""
     >
         <div>
             <div v-if="state === PythonState.Loading" class="run-spinner"></div>

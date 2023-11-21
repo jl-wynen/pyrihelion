@@ -18,6 +18,7 @@ defineEmits(["stopRunning"])
             state !== PythonState.RunningBackupLoading
         "
         @click="$emit('stopRunning')"
+        @mousedown.prevent=""
     >
         <font-awesome-icon icon="fa-solid fa-stop" class="stop-icon" />STOP
     </button>
