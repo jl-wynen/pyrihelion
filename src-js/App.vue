@@ -33,7 +33,9 @@ async function runPython() {
 }
 
 function stopPython() {
-    python?.terminate()
+    if (python?.state === PythonState.Running) {
+        python.terminate()
+    }
 }
 
 function onPythonFinished({ success, error }: PythonStatus) {
