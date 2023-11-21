@@ -5,11 +5,11 @@ import ConfirmDialog from "./ConfirmDialog.vue"
 const button = ref<HTMLButtonElement | null>(null)
 const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null)
 
-function requestReset() {
+async function requestReset() {
     if (confirmDialog.value === null) {
         return
     }
-    confirmDialog.value.show()
+    await confirmDialog.value.show()
 }
 
 function doReset() {

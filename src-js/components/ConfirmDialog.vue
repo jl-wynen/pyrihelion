@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { nextTick, ref } from "vue"
 import WarnTriangle from "../assets/icons/warn-triangle.svg"
 
 defineProps<{
@@ -7,8 +7,12 @@ defineProps<{
 }>()
 
 const visible = ref(false)
-function show() {
+const yesButton = ref<HTMLButtonElement | null>(null)
+
+async function show() {
     visible.value = true
+    await nextTick()
+    yesButton.value?.focus()
 }
 
 function hide() {
@@ -31,7 +35,13 @@ defineEmits(["yes", "no"])
                 <slot />
             </div>
             <div>
-                <button class="yes-button" @click="$emit('yes')">Yes</button>
+                <button
+                    class="yes-button"
+                    @click="$emit('yes')"
+                    ref="yesButton"
+                >
+                    Yes
+                </button>
                 <button class="no-button" @click="$emit('no')">No</button>
             </div>
         </div>

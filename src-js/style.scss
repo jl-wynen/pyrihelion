@@ -65,6 +65,11 @@ button {
   &:enabled:active {
     filter: brightness(0.8);
   }
+
+  &:focus,
+  &:focus-visible {
+    border: 2px solid var(--color-text-on-color1);
+  }
 }
 
 $toolbar-height: 2em;
