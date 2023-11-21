@@ -3,11 +3,9 @@ import WebGL from "three/addons/capabilities/WebGL.js"
 import { Ref } from "vue"
 
 import { Scene } from "./scene"
-import { connectToScene } from "./message"
+import { connectToScene, setUpdateRateTracker } from "./message"
 import { UpdateRate, UpdateRateTracker } from "./updateRate"
 
-// export type {UpdateRate as default} from "./updateRate"
-// export type UpdateRate
 export type { UpdateRate } from "./updateRate"
 
 let scene: Scene | undefined = undefined
@@ -26,6 +24,7 @@ export function init(options: {
         return
     }
     updateRateTracker = new UpdateRateTracker(options.updateRate)
+    setUpdateRateTracker(updateRateTracker)
 
     scene = new Scene()
     connectToScene(scene)

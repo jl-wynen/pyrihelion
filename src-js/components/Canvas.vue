@@ -19,7 +19,10 @@ defineExpose({
 <template>
     <div id="canvas-wrapper">
         <div id="render-container"></div>
-        <div id="update-rate">fps: {{ updateRate.fps }}</div>
+        <div id="update-rate">
+            <div>fps: {{ updateRate.fps }}</div>
+            <div>ups: {{ updateRate.ups }}</div>
+        </div>
         <div id="canvas-toolbar">
             <input
                 type="checkbox"

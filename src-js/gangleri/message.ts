@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import { Scene } from "./scene"
+import { UpdateRateTracker } from "./updateRate.ts"
 
 export enum GangleriMessageKind {
     moveTo,
@@ -40,9 +41,14 @@ export type GangleriMessage =
     | ClearMessage
 
 let scene: Scene | undefined = undefined
+let updateRateTracker: UpdateRateTracker | undefined = undefined
 
 export function connectToScene(s: Scene) {
     scene = s
+}
+
+export function setUpdateRateTracker(t: UpdateRateTracker) {
+    updateRateTracker = t
 }
 
 export function sendMessage(message_queue: Array<GangleriMessage>) {
@@ -62,6 +68,7 @@ export function sendMessage(message_queue: Array<GangleriMessage>) {
                 break
         }
     }
+    updateRateTracker?.newUpdate()
 }
 
 function createMesh(message: CreateMessage) {
