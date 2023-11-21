@@ -25,10 +25,15 @@ defineEmits(["yes", "no"])
 </script>
 
 <template>
-    <div class="confirm-dialog-overlay modal-overlay" v-if="visible">
+    <div
+        class="confirm-dialog-overlay modal-overlay"
+        v-if="visible"
+        @click.self.stop="$emit('no')"
+    >
         <div
             class="confirm-dialog"
             :class="positive ? 'confirm-positive' : 'confirm-negative'"
+            @keydown.esc="$emit('no')"
         >
             <div>
                 <WarnTriangle />
