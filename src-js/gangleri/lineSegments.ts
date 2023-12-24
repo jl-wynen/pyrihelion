@@ -31,7 +31,9 @@ export class LineSegments extends Entity {
     }
 
     addPoint(position: number[]) {
-        console.log("Adding point", position)
+        if (this.nPoints >= this.MAX_POINTS) {
+            return
+        }
         this.positions[this.nPoints * 3] = position[0]
         this.positions[this.nPoints * 3 + 1] = position[1]
         this.positions[this.nPoints * 3 + 2] = position[2]
