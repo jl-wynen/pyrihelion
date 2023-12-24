@@ -32,7 +32,11 @@ class Box(Entity):
     """A box."""
 
     def __init__(
-        self, *, pos: list[float] | tuple[float], size: Iterable[float], color: str
+        self,
+        *,
+        pos: list[float] | tuple[float],
+        size: Iterable[float],
+        color: int | str,
     ) -> None:
         super().__init__(pos)
         queue_create(
@@ -53,7 +57,7 @@ class Sphere(Entity):
         *,
         pos: list[float] | tuple[float],
         radius: float,
-        color: str,
+        color: int | str,
         width_segments: int = 32,
         height_segments: int = 32,
     ) -> None:
