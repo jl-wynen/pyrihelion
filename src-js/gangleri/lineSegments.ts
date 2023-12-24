@@ -3,9 +3,9 @@ import { Entity, disposeObject } from "./entity"
 
 export class LineSegments extends Entity {
     private readonly MAX_POINTS = 5000
-    private positions: Float32Array
-    private geometry: THREE.BufferGeometry
-    private line: THREE.Line // TODO use THREE.LineSegments?
+    private readonly positions: Float32Array
+    private readonly geometry: THREE.BufferGeometry
+    private readonly line: THREE.Line
     private nPoints = 0
 
     constructor(color: number) {
