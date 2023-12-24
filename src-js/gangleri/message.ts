@@ -23,6 +23,7 @@ export type LineSegmentsMessage = {
     id: number
     op: string
     pos?: number[]
+    color?: number
 }
 
 export type CreateMessage = {
@@ -128,7 +129,7 @@ function moveTo(message: MoveToMessage) {
 
 function lineSegments(message: LineSegmentsMessage) {
     if (message.op === "create") {
-        const entity = new LineSegments()
+        const entity = new LineSegments(message.color!)
         scene?.add(message.id, entity)
     } else if (message.op === "add") {
         const entity = scene?.get(message.id)
@@ -139,8 +140,6 @@ function lineSegments(message: LineSegmentsMessage) {
             return
         }
         entity.addPoint(message.pos!)
-    } else if (message.op === "destroy") {
-        scene?.remove(message.id)
     } else {
         throw new Error("Unknown operation: " + message.op)
     }

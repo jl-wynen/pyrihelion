@@ -71,13 +71,16 @@ class Sphere(Entity):
 class LineSegments(Entity):
     """Line segments."""
 
-    def __init__(self):
+    def __init__(self, *, color: int | str = 0xCCCCCC):
         super().__init__([0, 0, 0])
-        queue_line_segments(id_=self._id, op="create", pos=None)
+        queue_line_segments(id_=self._id, op="create", color=color, pos=None)
 
     def add_point(self, pos: Vector3 | Iterable[float]) -> None:
         queue_line_segments(
-            id_=self._id, op="add", pos=Vector3.from_elements(pos, update=False)
+            id_=self._id,
+            op="add",
+            color=None,
+            pos=Vector3.from_elements(pos, update=False),
         )
 
     @property

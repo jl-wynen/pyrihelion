@@ -67,12 +67,15 @@ def queue_move_to(id_: int, pos: JSConvertible) -> None:
     queue_update({"what": backend.MessageKind.moveTo, "id": id_, "pos": as_js(pos)})
 
 
-def queue_line_segments(id_: int, op: str, pos: JSConvertible | None) -> None:
+def queue_line_segments(
+    id_: int, op: str, pos: JSConvertible | None = None, color: int | str | None = None
+) -> None:
     queue_update(
         {
             "what": backend.MessageKind.lineSegments,
             "id": id_,
             "op": op,
             "pos": as_js(pos),
+            "color": color,
         }
     )

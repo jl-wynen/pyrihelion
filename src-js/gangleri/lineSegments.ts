@@ -8,7 +8,7 @@ export class LineSegments extends Entity {
     private line: THREE.Line // TODO use THREE.LineSegments?
     private nPoints = 0
 
-    constructor() {
+    constructor(color: number) {
         super()
         this.positions = new Float32Array(this.MAX_POINTS * 3)
         this.geometry = new THREE.BufferGeometry()
@@ -17,7 +17,7 @@ export class LineSegments extends Entity {
             new THREE.BufferAttribute(this.positions, 3),
         )
         this.setDrawRange()
-        const material = new THREE.LineBasicMaterial({ color: 0xff00ff })
+        const material = new THREE.LineBasicMaterial({ color })
         this.line = new THREE.Line(this.geometry, material)
     }
 
