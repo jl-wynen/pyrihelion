@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { Scene } from "./scene"
-import { UpdateRateTracker } from "./updateRate.ts"
+import { UpdateRateTracker } from "./updateRate"
+import { Mesh } from "./entity"
 
 export enum GangleriMessageKind {
     moveTo,
@@ -72,12 +73,14 @@ export function sendMessage(message_queue: Array<GangleriMessage>) {
 }
 
 function createMesh(message: CreateMessage) {
-    const mesh = new THREE.Mesh(
-        createGeometry(message.geometry, message.geometry_params),
-        createMaterial(message.material, message.material_params),
+    scene?.add(
+        message.id,
+        new Mesh(
+            createGeometry(message.geometry, message.geometry_params),
+            createMaterial(message.material, message.material_params),
+            message.pos,
+        ),
     )
-    mesh.position.set(message.pos[0], message.pos[1], message.pos[2])
-    scene?.add(message.id, mesh)
 }
 
 function createGeometry(
@@ -104,8 +107,8 @@ function createMaterial(material: string, params: object): THREE.Material {
 }
 
 function moveTo(message: MoveToMessage) {
-    const object = scene?.get(message.id)
-    if (object) {
-        object.position.set(message.pos[0], message.pos[1], message.pos[2])
+    const entity = scene?.get(message.id)
+    if (entity) {
+        entity.moveTo(message.pos)
     }
 }

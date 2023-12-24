@@ -1,44 +1,43 @@
 import * as THREE from "three"
+import { Entity } from "./entity"
 
 export class Scene {
     private readonly scene: THREE.Scene
-    private userObjects: Map<number, THREE.Mesh>
+    private userEntities: Map<number, Entity>
     private axesHelper: THREE.AxesHelper | undefined = undefined
 
     constructor() {
         this.scene = new THREE.Scene()
-        this.userObjects = new Map()
+        this.userEntities = new Map()
     }
 
-    add(id: number, object: THREE.Mesh) {
-        if (this.userObjects.has(id)) {
-            console.error("Scene already has an object with id ", id)
-            dispose(object)
+    add(id: number, entity: Entity) {
+        if (this.userEntities.has(id)) {
+            console.error("Scene already has an entity with id ", id)
+            entity.dispose(this.scene)
             return
         }
-        this.userObjects.set(id, object)
-        this.scene.add(object)
+        this.userEntities.set(id, entity)
+        entity.addToScene(this.scene)
     }
 
     remove(id: number) {
-        const object = this.userObjects.get(id)
-        if (object) {
-            this.scene.remove(object)
-            this.userObjects.delete(id)
-            dispose(object)
+        const entity = this.userEntities.get(id)
+        if (entity) {
+            this.userEntities.delete(id)
+            entity.dispose(this.scene)
         }
     }
 
-    get(id: number): THREE.Mesh | undefined {
-        return this.userObjects.get(id)
+    get(id: number): Entity | undefined {
+        return this.userEntities.get(id)
     }
 
     clear(): void {
-        for (const object of this.userObjects.values()) {
-            this.scene.remove(object)
-            dispose(object)
+        for (const entity of this.userEntities.values()) {
+            entity.dispose(this.scene)
         }
-        this.userObjects.clear()
+        this.userEntities.clear()
     }
 
     toggleAxes(): void {
@@ -56,17 +55,4 @@ export class Scene {
     get underlying(): THREE.Scene {
         return this.scene
     }
-}
-
-function dispose(object: THREE.Mesh): void {
-    object.geometry?.dispose()
-
-    if (Array.isArray(object.material)) {
-        for (const material of object.material) {
-            material.dispose()
-        }
-    } else if (object.material !== undefined) {
-        object.material.dispose()
-    }
-    // TODO lines and other objects
 }
