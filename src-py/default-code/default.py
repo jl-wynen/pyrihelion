@@ -5,8 +5,8 @@ from gangleri import LineSegments, Sphere, init, update
 
 init()
 
-s = Sphere(pos=[0, 0, 0], radius=0.1, color="#aa9900")
-trace = LineSegments()
+s = Sphere(pos=[0, 0, 0], radius=0.1, color=0xAA9900)
+trace = LineSegments(color=0x887700)
 
 for t in range(1000):
     r = max(abs(math.cos(t * 0.01)), 0.2)
