@@ -8,7 +8,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "0.0.0"
 
 from ._engine import clear, init, update
-from ._entity import Box, Sphere
+from ._entity import Box, LineSegments, Sphere
 from ._vector import Vector3
 
-__all__ = ["Box", "Sphere", "Vector3", "clear", "init", "update"]
+__all__ = ["Box", "LineSegments", "Sphere", "Vector3", "clear", "init", "update"]

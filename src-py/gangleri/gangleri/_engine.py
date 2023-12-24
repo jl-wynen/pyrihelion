@@ -9,8 +9,8 @@ from .typing import JSConvertible
 _update_queue: list[js.Object] = []
 
 
-def as_js(obj: JSConvertible) -> Any:
-    return obj.__as_js__()
+def as_js(obj: JSConvertible | None) -> Any:
+    return None if obj is None else obj.__as_js__()
 
 
 def clear() -> None:
@@ -65,3 +65,14 @@ def queue_destroy(id_: int) -> None:
 
 def queue_move_to(id_: int, pos: JSConvertible) -> None:
     queue_update({"what": backend.MessageKind.moveTo, "id": id_, "pos": as_js(pos)})
+
+
+def queue_line_segments(id_: int, op: str, pos: JSConvertible | None) -> None:
+    queue_update(
+        {
+            "what": backend.MessageKind.lineSegments,
+            "id": id_,
+            "op": op,
+            "pos": as_js(pos),
+        }
+    )

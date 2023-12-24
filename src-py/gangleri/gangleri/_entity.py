@@ -2,7 +2,7 @@ from typing import Iterable
 
 import js
 
-from ._engine import queue_create, queue_destroy
+from ._engine import queue_create, queue_destroy, queue_line_segments
 from ._ffi import dict_to_js_object
 from ._registry import generate_id
 from ._vector import Vector3
@@ -66,3 +66,24 @@ class Sphere(Entity):
             material="basic",
             material_params=dict_to_js_object({"color": color}),
         )
+
+
+class LineSegments(Entity):
+    """Line segments."""
+
+    def __init__(self):
+        super().__init__([0, 0, 0])
+        queue_line_segments(id_=self._id, op="create", pos=None)
+
+    def add_point(self, pos: Vector3 | Iterable[float]) -> None:
+        queue_line_segments(
+            id_=self._id, op="add", pos=Vector3.from_elements(pos, update=False)
+        )
+
+    @property
+    def pos(self) -> Vector3:
+        raise TypeError("LineSegments does not have a unique position.")
+
+    @pos.setter
+    def pos(self, pos: Vector3) -> None:
+        raise TypeError("LineSegments does not have a unique position.")

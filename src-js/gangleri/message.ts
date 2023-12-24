@@ -2,10 +2,12 @@ import * as THREE from "three"
 import { Scene } from "./scene"
 import { UpdateRateTracker } from "./updateRate"
 import { Mesh } from "./entity"
+import { LineSegments } from "./lineSegments"
 
 export enum GangleriMessageKind {
     moveTo,
     create,
+    lineSegments,
     destroy,
     clear,
 }
@@ -13,13 +15,20 @@ export enum GangleriMessageKind {
 export type MoveToMessage = {
     what: GangleriMessageKind.moveTo
     id: number
-    pos: Array<number>
+    pos: number[]
+}
+
+export type LineSegmentsMessage = {
+    what: GangleriMessageKind.lineSegments
+    id: number
+    op: string
+    pos?: number[]
 }
 
 export type CreateMessage = {
     what: GangleriMessageKind.create
     id: number
-    pos: Array<number>
+    pos: number[]
     geometry: string
     geometry_params: Iterable<never>
     material: string
@@ -37,6 +46,7 @@ export type ClearMessage = {
 
 export type GangleriMessage =
     | MoveToMessage
+    | LineSegmentsMessage
     | CreateMessage
     | DestroyMessage
     | ClearMessage
@@ -57,6 +67,9 @@ export function sendMessage(message_queue: Array<GangleriMessage>) {
         switch (message.what) {
             case GangleriMessageKind.moveTo:
                 moveTo(message)
+                break
+            case GangleriMessageKind.lineSegments:
+                lineSegments(message)
                 break
             case GangleriMessageKind.create:
                 createMesh(message)
@@ -110,5 +123,25 @@ function moveTo(message: MoveToMessage) {
     const entity = scene?.get(message.id)
     if (entity) {
         entity.moveTo(message.pos)
+    }
+}
+
+function lineSegments(message: LineSegmentsMessage) {
+    if (message.op === "create") {
+        const entity = new LineSegments()
+        scene?.add(message.id, entity)
+    } else if (message.op === "add") {
+        const entity = scene?.get(message.id)
+        if (!(entity instanceof LineSegments)) {
+            console.error(
+                "Tried to add a line segment to a non-line segment entity",
+            )
+            return
+        }
+        entity.addPoint(message.pos!)
+    } else if (message.op === "destroy") {
+        scene?.remove(message.id)
+    } else {
+        throw new Error("Unknown operation: " + message.op)
     }
 }

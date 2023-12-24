@@ -4,7 +4,7 @@ export abstract class Entity {
     abstract addToScene(scene: THREE.Scene): void
     abstract dispose(scene: THREE.Scene): void
 
-    moveTo(pos: Array<number>) {
+    moveTo(pos: number[]) {
         console.error(`Entity does not implement moveTo, pos=${pos}`)
     }
 }
@@ -15,7 +15,7 @@ export class Mesh extends Entity {
     constructor(
         geometry: THREE.BufferGeometry,
         material: THREE.Material,
-        position: Array<number>,
+        position: number[],
     ) {
         super()
         this.mesh = new THREE.Mesh(geometry, material)
@@ -28,17 +28,26 @@ export class Mesh extends Entity {
 
     dispose(scene: THREE.Scene) {
         scene.remove(this.mesh)
-        this.mesh.geometry?.dispose()
-        if (Array.isArray(this.mesh.material)) {
-            for (const material of this.mesh.material) {
-                material.dispose()
-            }
-        } else if (this.mesh.material !== undefined) {
-            this.mesh.material.dispose()
-        }
+        disposeObject(this.mesh)
     }
 
-    moveTo(position: Array<number>) {
+    moveTo(position: number[]) {
         this.mesh.position.set(position[0], position[1], position[2])
+    }
+}
+
+interface Disposable {
+    geometry?: THREE.BufferGeometry
+    material?: THREE.Material | Array<THREE.Material>
+}
+
+export function disposeObject(object: Disposable) {
+    object.geometry?.dispose()
+    if (Array.isArray(object.material)) {
+        for (const material of object.material) {
+            material.dispose()
+        }
+    } else if (object.material !== undefined) {
+        object.material.dispose()
     }
 }
